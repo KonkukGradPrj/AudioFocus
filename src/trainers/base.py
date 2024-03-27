@@ -129,7 +129,7 @@ class BaseTrainer():
                 predict_text, predict_vec = self.model.test(mixed_voices, target_voices)
                 _, target_vec = self.vanilla.test(clean_voices, target_voices)
                 loss = self.loss_fn(predict_vec, target_vec)
-                wer = self.wer.compute(references=target_text, predictions=predict_text)
+                wer = self.wer.compute(references=target_text, predictions=predict_text).mean()
 
             n = len(target_text)
             loss_list.append(loss * n)

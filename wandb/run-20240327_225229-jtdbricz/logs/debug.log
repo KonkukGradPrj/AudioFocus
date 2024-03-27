@@ -25,3 +25,4 @@ config: {'project_name': 'AudioFocus', 'entity': 'hyeonsio', 'group_name': 'tune
 2024-03-27 22:52:33,395 INFO    MainThread:990851 [wandb_run.py:_redirect():2161] Wrapping output streams.
 2024-03-27 22:52:33,395 INFO    MainThread:990851 [wandb_run.py:_redirect():2186] Redirects installed.
 2024-03-27 22:52:33,395 INFO    MainThread:990851 [wandb_init.py:init():847] run started, returning control to user process
+2024-03-27 22:55:50,373 WARNING MsgRouterThr:990851 [router.py:message_loop():77] message_loop has been closed
