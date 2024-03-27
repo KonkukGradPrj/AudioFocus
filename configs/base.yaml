@@ -1,0 +1,9 @@
+project_name: 'AudioFocus'
+entity: 'hyeonsio'
+group_name: 'test'
+exp_name: 'test'
+device: 'cuda:0'
+seed: 0
+
+defaults:
+- _self_

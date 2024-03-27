@@ -1,0 +1,102 @@
+{
+    "os": "Linux-5.15.0-89-generic-x86_64-with-glibc2.31",
+    "python": "3.10.14",
+    "heartbeatAt": "2024-03-27T07:37:06.033173",
+    "startedAt": "2024-03-27T07:37:05.251047",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/hyeons/workspace/AudioFocus/run.py",
+    "codePathLocal": "run.py",
+    "codePath": "run.py",
+    "host": "hyeons-MS-7D42",
+    "username": "hyeons",
+    "executable": "/home/hyeons/miniconda3/envs/gp2/bin/python",
+    "cpu_count": 6,
+    "cpu_count_logical": 12,
+    "cpu_freq": {
+        "current": 2362.0404166666667,
+        "min": 800.0,
+        "max": 4400.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 844.485,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2500.0,
+            "min": 800.0,
+            "max": 4400.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 915.3232879638672,
+            "used": 335.56946563720703
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 3060",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3060",
+            "memory_total": 12884901888
+        }
+    ],
+    "memory": {
+        "total": 31.13253402709961
+    }
+}

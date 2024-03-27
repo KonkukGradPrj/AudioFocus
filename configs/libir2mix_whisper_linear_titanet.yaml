@@ -1,0 +1,12 @@
+trainer:
+  optimizer:
+    lr: 0.003
+    weight_decay: 0.05
+
+defaults:
+- base
+- dataset: libri2mix
+- model: whisper_linear_titanet
+- vanilla: whisper
+- trainer: base
+- _self_

@@ -1,0 +1,37 @@
+2024-03-27 22:38:01,776 INFO    StreamThr :981983 [internal.py:wandb_internal():86] W&B internal server running at pid: 981983, started at: 2024-03-27 22:38:01.776565
+2024-03-27 22:38:01,777 DEBUG   HandlerThread:981983 [handler.py:handle_request():146] handle_request: status
+2024-03-27 22:38:01,780 INFO    WriterThread:981983 [datastore.py:open_for_write():87] open: /home/hyeons/workspace/AudioFocus/wandb/offline-run-20240327_223801-btbszfkw/run-btbszfkw.wandb
+2024-03-27 22:38:01,829 DEBUG   HandlerThread:981983 [handler.py:handle_request():146] handle_request: run_start
+2024-03-27 22:38:01,855 DEBUG   HandlerThread:981983 [system_info.py:__init__():26] System info init
+2024-03-27 22:38:01,855 DEBUG   HandlerThread:981983 [system_info.py:__init__():41] System info init done
+2024-03-27 22:38:01,855 INFO    HandlerThread:981983 [system_monitor.py:start():194] Starting system monitor
+2024-03-27 22:38:01,855 INFO    SystemMonitor:981983 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-03-27 22:38:01,856 INFO    HandlerThread:981983 [system_monitor.py:probe():214] Collecting system info
+2024-03-27 22:38:01,856 INFO    SystemMonitor:981983 [interfaces.py:start():190] Started cpu monitoring
+2024-03-27 22:38:01,857 INFO    SystemMonitor:981983 [interfaces.py:start():190] Started disk monitoring
+2024-03-27 22:38:01,859 INFO    SystemMonitor:981983 [interfaces.py:start():190] Started gpu monitoring
+2024-03-27 22:38:01,860 INFO    SystemMonitor:981983 [interfaces.py:start():190] Started memory monitoring
+2024-03-27 22:38:01,861 INFO    SystemMonitor:981983 [interfaces.py:start():190] Started network monitoring
+2024-03-27 22:38:01,887 DEBUG   HandlerThread:981983 [system_info.py:probe():150] Probing system
+2024-03-27 22:38:01,888 DEBUG   HandlerThread:981983 [gitlib.py:_init_repo():56] git repository is invalid
+2024-03-27 22:38:01,888 DEBUG   HandlerThread:981983 [system_info.py:probe():198] Probing system done
+2024-03-27 22:38:01,888 DEBUG   HandlerThread:981983 [system_monitor.py:probe():223] {'os': 'Linux-5.15.0-89-generic-x86_64-with-glibc2.31', 'python': '3.10.14', 'heartbeatAt': '2024-03-27T13:38:01.887370', 'startedAt': '2024-03-27T13:38:01.769408', 'docker': None, 'cuda': None, 'args': ('--overrides', 'group_name=tune_libri2mix_linear_titanet', '--overrides', 'exp_name=lr0.01_wd0.001', '--overrides', 'trainer.optimizer.lr=0.01', '--overrides', 'trainer.optimizer.weight_decay=0.001', '--overrides', 'seed=1'), 'state': 'running', 'program': '/home/hyeons/workspace/AudioFocus/run.py', 'codePathLocal': 'run.py', 'codePath': 'run.py', 'host': 'hyeons-MS-7D42', 'username': 'hyeons', 'executable': '/home/hyeons/miniconda3/envs/gp2/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 2359.49675, 'min': 800.0, 'max': 4400.0}, 'cpu_freq_per_core': [{'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 813.961, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}], 'disk': {'/': {'total': 915.3232879638672, 'used': 335.64757537841797}}, 'gpu': 'NVIDIA GeForce RTX 3060', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 3060', 'memory_total': 12884901888}], 'memory': {'total': 31.13253402709961}}
+2024-03-27 22:38:01,888 INFO    HandlerThread:981983 [system_monitor.py:probe():224] Finished collecting system info
+2024-03-27 22:38:01,888 INFO    HandlerThread:981983 [system_monitor.py:probe():227] Publishing system info
+2024-03-27 22:38:01,888 DEBUG   HandlerThread:981983 [system_info.py:_save_conda():207] Saving list of conda packages installed into the current environment
+2024-03-27 22:38:04,653 DEBUG   HandlerThread:981983 [system_info.py:_save_conda():219] Saving conda packages done
+2024-03-27 22:38:04,654 INFO    HandlerThread:981983 [system_monitor.py:probe():229] Finished publishing system info
+2024-03-27 22:38:04,739 DEBUG   HandlerThread:981983 [handler.py:handle_request():146] handle_request: python_packages
+2024-03-27 22:38:06,779 DEBUG   HandlerThread:981983 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:38:06,779 DEBUG   SenderThread:981983 [sender.py:send_request():405] send_request: status_report
+2024-03-27 22:38:11,780 DEBUG   HandlerThread:981983 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:38:11,780 DEBUG   SenderThread:981983 [sender.py:send_request():405] send_request: status_report
+2024-03-27 22:38:16,781 DEBUG   HandlerThread:981983 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:38:16,781 DEBUG   SenderThread:981983 [sender.py:send_request():405] send_request: status_report
+2024-03-27 22:38:21,782 DEBUG   HandlerThread:981983 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:38:21,782 DEBUG   SenderThread:981983 [sender.py:send_request():405] send_request: status_report
+2024-03-27 22:38:21,867 INFO    cpu       :981983 [interfaces.py:monitor():140] Process cpu has exited.
+2024-03-27 22:38:21,867 DEBUG   SystemMonitor:981983 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-03-27 22:38:21,868 DEBUG   SystemMonitor:981983 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-03-27 22:38:21,868 DEBUG   SystemMonitor:981983 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-03-27 22:38:22,788 INFO    MainThread:981983 [internal.py:handle_exit():76] Internal process exited

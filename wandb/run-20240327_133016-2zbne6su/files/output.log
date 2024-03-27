@@ -1,0 +1,18 @@
+
+100%|█████████████████████████████████████| 72.1M/72.1M [00:03<00:00, 23.4MiB/s]
+Traceback (most recent call last):
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 65, in <module>
+    run(vars(args))
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 40, in run
+    model = build_model(cfg.model)
+  File "/home/hyeons/workspace/AudioFocus/src/models/__init__.py", line 35, in build_model
+    filter = asr_cls(**filter_cls)
+TypeError: src.models.asr.whisper.Whisper() argument after ** must be a mapping, not type
+Traceback (most recent call last):
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 65, in <module>
+    run(vars(args))
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 40, in run
+    model = build_model(cfg.model)
+  File "/home/hyeons/workspace/AudioFocus/src/models/__init__.py", line 35, in build_model
+    filter = asr_cls(**filter_cls)
+TypeError: src.models.asr.whisper.Whisper() argument after ** must be a mapping, not type

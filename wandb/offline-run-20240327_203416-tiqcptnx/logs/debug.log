@@ -1,0 +1,25 @@
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_setup.py:_flush():76] Current SDK version is 0.16.4
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_setup.py:_flush():76] Configure stats pid to 868556
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_setup.py:_flush():76] Loading settings from /home/hyeons/.config/wandb/settings
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_setup.py:_flush():76] Loading settings from /home/hyeons/workspace/AudioFocus/wandb/settings
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'run.py', 'program_abspath': '/home/hyeons/workspace/AudioFocus/run.py', 'program': '/home/hyeons/workspace/AudioFocus/run.py'}
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_init.py:_log_setup():526] Logging user logs to /home/hyeons/workspace/AudioFocus/wandb/offline-run-20240327_203416-tiqcptnx/logs/debug.log
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_init.py:_log_setup():527] Logging internal logs to /home/hyeons/workspace/AudioFocus/wandb/offline-run-20240327_203416-tiqcptnx/logs/debug-internal.log
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_init.py:init():566] calling init triggers
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_init.py:init():573] wandb.init called with sweep_config: {}
+config: {'project_name': 'AudioFocus', 'entity': 'hyeonsio', 'group_name': 'test', 'exp_name': 'test', 'device': 'cuda:0', 'seed': 0, 'dataset': {'type': 'Libri2Mix', 'dataloader': {'batch_size': 5, 'num_workers': 4, 'pin_memory': True}}, 'model': {'asr': {'type': 'whisper', 'opt': 'tiny.en'}, 'filter': {'type': 'linear', 'in_dim': 192, 'hidden_dim': 288, 'out_dim': 384}, 'speaker': {'type': 'titanet', 'opt': 'nvidia/speakerverification_en_titanet_large'}}, 'vanilla': {'asr': {'type': 'whisper', 'opt': 'tiny.en'}, 'filter': {'type': 'base'}, 'speaker': {'type': 'base'}}, 'trainer': {'seed': 0, 'use_amp': True, 'base_epochs': 100, 'clip_grad_norm': 0.5, 'optimizer_type': 'adamw', 'optimizer': {'lr': 0.003, 'weight_decay': 0.05, 'betas': [0.9, 0.999], 'eps': 1e-08}, 'scheduler': {'first_cycle_steps': None, 'cycle_mult': 1.0, 'max_lr': 0.003, 'min_lr': 0.003, 'warmup_lr': 0.0, 'warmup_ratio': 0.1, 'gamma': 1.0}, 'log_every': 1000, 'base_test_every': 5}}
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_init.py:init():616] starting backend
+2024-03-27 20:34:16,101 INFO    MainThread:868556 [wandb_init.py:init():620] setting up manager
+2024-03-27 20:34:16,103 INFO    MainThread:868556 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-03-27 20:34:16,104 INFO    MainThread:868556 [wandb_init.py:init():628] backend started and connected
+2024-03-27 20:34:16,108 INFO    MainThread:868556 [wandb_init.py:init():720] updated telemetry
+2024-03-27 20:34:16,108 INFO    MainThread:868556 [wandb_init.py:init():753] communicating run to backend with 90.0 second timeout
+2024-03-27 20:34:16,110 INFO    MainThread:868556 [wandb_init.py:init():804] starting run threads in backend
+2024-03-27 20:34:19,075 INFO    MainThread:868556 [wandb_run.py:_console_start():2241] atexit reg
+2024-03-27 20:34:19,075 INFO    MainThread:868556 [wandb_run.py:_redirect():2096] redirect: wrap_raw
+2024-03-27 20:34:19,075 INFO    MainThread:868556 [wandb_run.py:_redirect():2161] Wrapping output streams.
+2024-03-27 20:34:19,076 INFO    MainThread:868556 [wandb_run.py:_redirect():2186] Redirects installed.
+2024-03-27 20:34:19,076 INFO    MainThread:868556 [wandb_init.py:init():847] run started, returning control to user process
+2024-03-27 20:34:25,371 WARNING MsgRouterThr:868556 [router.py:message_loop():77] message_loop has been closed

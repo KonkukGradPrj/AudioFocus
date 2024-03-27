@@ -1,0 +1,4 @@
+type: linear
+in_dim: 192
+hidden_dim: 288
+out_dim: 384

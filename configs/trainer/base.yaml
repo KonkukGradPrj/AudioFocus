@@ -1,0 +1,32 @@
+# defaults
+seed: ${seed}
+
+# performance optimization
+use_amp: True
+
+################
+# train
+base_epochs: 100
+clip_grad_norm: 0.5
+
+optimizer_type: 'adamw'
+optimizer:
+  lr: 0.0001
+  weight_decay: 0.00001
+  betas: [0.9, 0.999]
+  eps: 0.00000001
+
+scheduler:
+  first_cycle_steps: null
+  cycle_mult: 1.0
+  max_lr: ${trainer.optimizer.lr}
+  min_lr: ${trainer.optimizer.lr}
+  warmup_lr: 0.0
+  warmup_ratio: 0.1
+  gamma: 1.0
+
+
+################ 
+# evaluation
+log_every: 1000       # per_step
+base_test_every: 5    # per_epoch

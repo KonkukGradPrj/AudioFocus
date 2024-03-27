@@ -1,0 +1,72 @@
+[NeMo W 2024-03-27 17:08:00 modelPT:165] If you intend to do training or fine-tuning, please call the ModelPT.setup_training_data() method and provide a valid configuration file to setup the train data loader.
+    Train config :
+    manifest_filepath: /manifests/combined_fisher_swbd_voxceleb12_librispeech/train.json
+    sample_rate: 16000
+    labels: null
+    batch_size: 64
+    shuffle: true
+    is_tarred: false
+    tarred_audio_filepaths: null
+    tarred_shard_strategy: scatter
+    augmentor:
+      noise:
+        manifest_path: /manifests/noise/rir_noise_manifest.json
+        prob: 0.5
+        min_snr_db: 0
+        max_snr_db: 15
+      speed:
+        prob: 0.5
+        sr: 16000
+        resample_type: kaiser_fast
+        min_speed_rate: 0.95
+        max_speed_rate: 1.05
+    num_workers: 15
+    pin_memory: true
+[NeMo W 2024-03-27 17:08:00 modelPT:172] If you intend to do validation, please call the ModelPT.setup_validation_data() or ModelPT.setup_multiple_validation_data() method and provide a valid configuration file to setup the validation data loader(s).
+    Validation config :
+    manifest_filepath: /manifests/combined_fisher_swbd_voxceleb12_librispeech/dev.json
+    sample_rate: 16000
+    labels: null
+    batch_size: 128
+    shuffle: false
+    num_workers: 15
+    pin_memory: true
+[NeMo I 2024-03-27 17:08:00 features:289] PADDING: 16
+[NeMo I 2024-03-27 17:08:01 save_restore_connector:249] Model EncDecSpeakerLabelModel was successfully restored from /home/hyeons/.cache/huggingface/hub/models--nvidia--speakerverification_en_titanet_large/snapshots/0dc382f40121a5fbd34db10a2bb04d826c2be6a8/speakerverification_en_titanet_large.nemo.
+  0%|                                                                                            | 0/2620 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 65, in <module>
+    run(vars(args))
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 53, in run
+    trainer.train()
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 68, in train
+    test_logs.update(self.test())
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 128, in test
+    predict_utter, predict_vec = self.model.test(mixed_voices, target_voices)
+  File "/home/hyeons/workspace/AudioFocus/src/models/base.py", line 34, in test
+    emb = self.asr_model.encode(mixed_voice)
+  File "/home/hyeons/workspace/AudioFocus/src/models/asr/whisper.py", line 293, in encode
+    mel = whisper.log_mel_spectrogram(wav)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/whisper/audio.py", line 148, in log_mel_spectrogram
+    stft = torch.stft(audio, N_FFT, HOP_LENGTH, window=window, return_complex=True)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/torch/functional.py", line 660, in stft
+    return _VF.stft(input, n_fft, hop_length, win_length, window,  # type: ignore[attr-defined]
+RuntimeError: stft(torch.FloatTensor[1, 1, 480400], n_fft=400, hop_length=160, win_length=400, window=torch.FloatTensor{[400]}, normalized=0, onesided=None, return_complex=1) : expected a 1D or 2D tensor
+Traceback (most recent call last):
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 65, in <module>
+    run(vars(args))
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 53, in run
+    trainer.train()
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 68, in train
+    test_logs.update(self.test())
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 128, in test
+    predict_utter, predict_vec = self.model.test(mixed_voices, target_voices)
+  File "/home/hyeons/workspace/AudioFocus/src/models/base.py", line 34, in test
+    emb = self.asr_model.encode(mixed_voice)
+  File "/home/hyeons/workspace/AudioFocus/src/models/asr/whisper.py", line 293, in encode
+    mel = whisper.log_mel_spectrogram(wav)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/whisper/audio.py", line 148, in log_mel_spectrogram
+    stft = torch.stft(audio, N_FFT, HOP_LENGTH, window=window, return_complex=True)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/torch/functional.py", line 660, in stft
+    return _VF.stft(input, n_fft, hop_length, win_length, window,  # type: ignore[attr-defined]
+RuntimeError: stft(torch.FloatTensor[1, 1, 480400], n_fft=400, hop_length=160, win_length=400, window=torch.FloatTensor{[400]}, normalized=0, onesided=None, return_complex=1) : expected a 1D or 2D tensor

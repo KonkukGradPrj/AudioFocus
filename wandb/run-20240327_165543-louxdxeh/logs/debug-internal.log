@@ -1,0 +1,193 @@
+2024-03-27 16:55:43,207 INFO    StreamThr :768820 [internal.py:wandb_internal():86] W&B internal server running at pid: 768820, started at: 2024-03-27 16:55:43.207319
+2024-03-27 16:55:43,208 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: status
+2024-03-27 16:55:43,211 INFO    WriterThread:768820 [datastore.py:open_for_write():87] open: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/run-louxdxeh.wandb
+2024-03-27 16:55:43,211 DEBUG   SenderThread:768820 [sender.py:send():378] send: header
+2024-03-27 16:55:43,211 DEBUG   SenderThread:768820 [sender.py:send():378] send: run
+2024-03-27 16:55:43,771 INFO    SenderThread:768820 [dir_watcher.py:__init__():211] watching files in: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files
+2024-03-27 16:55:43,771 INFO    SenderThread:768820 [sender.py:_start_run_threads():1099] run started: louxdxeh with start time 1711526143.207339
+2024-03-27 16:55:43,774 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: check_version
+2024-03-27 16:55:43,775 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: check_version
+2024-03-27 16:55:43,880 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: run_start
+2024-03-27 16:55:43,913 DEBUG   HandlerThread:768820 [system_info.py:__init__():26] System info init
+2024-03-27 16:55:43,913 DEBUG   HandlerThread:768820 [system_info.py:__init__():41] System info init done
+2024-03-27 16:55:43,913 INFO    HandlerThread:768820 [system_monitor.py:start():194] Starting system monitor
+2024-03-27 16:55:43,914 INFO    SystemMonitor:768820 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-03-27 16:55:43,914 INFO    HandlerThread:768820 [system_monitor.py:probe():214] Collecting system info
+2024-03-27 16:55:43,915 INFO    SystemMonitor:768820 [interfaces.py:start():190] Started cpu monitoring
+2024-03-27 16:55:43,916 INFO    SystemMonitor:768820 [interfaces.py:start():190] Started disk monitoring
+2024-03-27 16:55:43,918 INFO    SystemMonitor:768820 [interfaces.py:start():190] Started gpu monitoring
+2024-03-27 16:55:43,919 INFO    SystemMonitor:768820 [interfaces.py:start():190] Started memory monitoring
+2024-03-27 16:55:43,920 INFO    SystemMonitor:768820 [interfaces.py:start():190] Started network monitoring
+2024-03-27 16:55:43,948 DEBUG   HandlerThread:768820 [system_info.py:probe():150] Probing system
+2024-03-27 16:55:43,952 DEBUG   HandlerThread:768820 [gitlib.py:_init_repo():56] git repository is invalid
+2024-03-27 16:55:43,952 DEBUG   HandlerThread:768820 [system_info.py:probe():198] Probing system done
+2024-03-27 16:55:43,952 DEBUG   HandlerThread:768820 [system_monitor.py:probe():223] {'os': 'Linux-5.15.0-89-generic-x86_64-with-glibc2.31', 'python': '3.10.14', 'heartbeatAt': '2024-03-27T07:55:43.949166', 'startedAt': '2024-03-27T07:55:43.190058', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '/home/hyeons/workspace/AudioFocus/run.py', 'codePathLocal': 'run.py', 'codePath': 'run.py', 'host': 'hyeons-MS-7D42', 'username': 'hyeons', 'executable': '/home/hyeons/miniconda3/envs/gp2/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 2358.8090833333335, 'min': 800.0, 'max': 4400.0}, 'cpu_freq_per_core': [{'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 805.709, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}], 'disk': {'/': {'total': 915.3232879638672, 'used': 335.5703811645508}}, 'gpu': 'NVIDIA GeForce RTX 3060', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 3060', 'memory_total': 12884901888}], 'memory': {'total': 31.13253402709961}}
+2024-03-27 16:55:43,952 INFO    HandlerThread:768820 [system_monitor.py:probe():224] Finished collecting system info
+2024-03-27 16:55:43,952 INFO    HandlerThread:768820 [system_monitor.py:probe():227] Publishing system info
+2024-03-27 16:55:43,952 DEBUG   HandlerThread:768820 [system_info.py:_save_conda():207] Saving list of conda packages installed into the current environment
+2024-03-27 16:55:44,771 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/conda-environment.yaml
+2024-03-27 16:55:46,707 DEBUG   HandlerThread:768820 [system_info.py:_save_conda():219] Saving conda packages done
+2024-03-27 16:55:46,708 INFO    HandlerThread:768820 [system_monitor.py:probe():229] Finished publishing system info
+2024-03-27 16:55:46,710 DEBUG   SenderThread:768820 [sender.py:send():378] send: files
+2024-03-27 16:55:46,710 INFO    SenderThread:768820 [sender.py:_save_file():1365] saving file wandb-metadata.json with policy now
+2024-03-27 16:55:46,771 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/conda-environment.yaml
+2024-03-27 16:55:46,771 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/wandb-metadata.json
+2024-03-27 16:55:46,797 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: python_packages
+2024-03-27 16:55:46,797 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: stop_status
+2024-03-27 16:55:46,797 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: python_packages
+2024-03-27 16:55:46,798 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: stop_status
+2024-03-27 16:55:46,799 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 16:55:47,101 DEBUG   SenderThread:768820 [sender.py:send():378] send: telemetry
+2024-03-27 16:55:47,562 INFO    wandb-upload_0:768820 [upload_job.py:push():131] Uploaded file /tmp/tmpsw0fmvsgwandb/meipwwif-wandb-metadata.json
+2024-03-27 16:55:47,771 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/output.log
+2024-03-27 16:55:47,772 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/requirements.txt
+2024-03-27 16:55:48,794 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 16:55:49,772 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/output.log
+2024-03-27 16:55:51,773 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/output.log
+2024-03-27 16:55:54,480 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 16:55:59,481 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 16:56:01,798 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: stop_status
+2024-03-27 16:56:01,798 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 16:56:01,798 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: stop_status
+2024-03-27 16:56:05,043 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 16:56:10,043 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 16:56:14,204 DEBUG   SenderThread:768820 [sender.py:send():378] send: exit
+2024-03-27 16:56:14,204 INFO    SenderThread:768820 [sender.py:send_exit():585] handling exit code: 1
+2024-03-27 16:56:14,204 INFO    SenderThread:768820 [sender.py:send_exit():587] handling runtime: 30
+2024-03-27 16:56:14,206 INFO    SenderThread:768820 [sender.py:_save_file():1365] saving file wandb-summary.json with policy end
+2024-03-27 16:56:14,206 INFO    SenderThread:768820 [sender.py:send_exit():593] send defer
+2024-03-27 16:56:14,206 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:14,206 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 0
+2024-03-27 16:56:14,207 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:14,207 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 0
+2024-03-27 16:56:14,207 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 1
+2024-03-27 16:56:14,207 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:14,207 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 1
+2024-03-27 16:56:14,207 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:14,207 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 1
+2024-03-27 16:56:14,207 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 2
+2024-03-27 16:56:14,208 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:14,208 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 2
+2024-03-27 16:56:14,208 INFO    HandlerThread:768820 [system_monitor.py:finish():203] Stopping system monitor
+2024-03-27 16:56:14,208 DEBUG   SystemMonitor:768820 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-03-27 16:56:14,208 DEBUG   SystemMonitor:768820 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-03-27 16:56:14,208 DEBUG   SystemMonitor:768820 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-03-27 16:56:14,209 INFO    HandlerThread:768820 [interfaces.py:finish():202] Joined cpu monitor
+2024-03-27 16:56:14,210 INFO    HandlerThread:768820 [interfaces.py:finish():202] Joined disk monitor
+2024-03-27 16:56:14,236 INFO    HandlerThread:768820 [interfaces.py:finish():202] Joined gpu monitor
+2024-03-27 16:56:14,236 INFO    HandlerThread:768820 [interfaces.py:finish():202] Joined memory monitor
+2024-03-27 16:56:14,236 INFO    HandlerThread:768820 [interfaces.py:finish():202] Joined network monitor
+2024-03-27 16:56:14,236 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:14,236 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 2
+2024-03-27 16:56:14,236 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 3
+2024-03-27 16:56:14,236 DEBUG   SenderThread:768820 [sender.py:send():378] send: stats
+2024-03-27 16:56:14,237 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:14,237 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 3
+2024-03-27 16:56:14,237 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:14,237 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 3
+2024-03-27 16:56:14,237 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 4
+2024-03-27 16:56:14,237 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:14,237 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 4
+2024-03-27 16:56:14,237 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:14,237 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 4
+2024-03-27 16:56:14,237 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 5
+2024-03-27 16:56:14,237 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:14,237 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 5
+2024-03-27 16:56:14,237 DEBUG   SenderThread:768820 [sender.py:send():378] send: summary
+2024-03-27 16:56:14,237 INFO    SenderThread:768820 [sender.py:_save_file():1365] saving file wandb-summary.json with policy end
+2024-03-27 16:56:14,237 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:14,237 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 5
+2024-03-27 16:56:14,237 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 6
+2024-03-27 16:56:14,237 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:14,237 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 6
+2024-03-27 16:56:14,238 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:14,238 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 6
+2024-03-27 16:56:14,239 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 16:56:14,467 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 7
+2024-03-27 16:56:14,468 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:14,468 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 7
+2024-03-27 16:56:14,468 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:14,468 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 7
+2024-03-27 16:56:14,777 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/config.yaml
+2024-03-27 16:56:14,778 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/wandb-summary.json
+2024-03-27 16:56:15,202 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: poll_exit
+2024-03-27 16:56:15,589 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 8
+2024-03-27 16:56:15,590 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: poll_exit
+2024-03-27 16:56:15,590 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:15,590 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 8
+2024-03-27 16:56:15,591 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:15,591 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 8
+2024-03-27 16:56:15,592 INFO    SenderThread:768820 [job_builder.py:build():298] Attempting to build job artifact
+2024-03-27 16:56:15,593 INFO    SenderThread:768820 [job_builder.py:_get_source_type():439] no source found
+2024-03-27 16:56:15,593 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 9
+2024-03-27 16:56:15,593 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:15,593 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 9
+2024-03-27 16:56:15,594 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:15,594 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 9
+2024-03-27 16:56:15,594 INFO    SenderThread:768820 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-03-27 16:56:15,778 INFO    Thread-12 :768820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/output.log
+2024-03-27 16:56:15,779 INFO    SenderThread:768820 [dir_watcher.py:finish():388] scan: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files
+2024-03-27 16:56:15,780 INFO    SenderThread:768820 [dir_watcher.py:finish():402] scan save: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/output.log output.log
+2024-03-27 16:56:15,780 INFO    SenderThread:768820 [dir_watcher.py:finish():402] scan save: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/requirements.txt requirements.txt
+2024-03-27 16:56:15,780 INFO    SenderThread:768820 [dir_watcher.py:finish():402] scan save: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/wandb-summary.json wandb-summary.json
+2024-03-27 16:56:15,780 INFO    SenderThread:768820 [dir_watcher.py:finish():402] scan save: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/config.yaml config.yaml
+2024-03-27 16:56:15,781 INFO    SenderThread:768820 [dir_watcher.py:finish():402] scan save: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/wandb-metadata.json wandb-metadata.json
+2024-03-27 16:56:15,781 INFO    SenderThread:768820 [dir_watcher.py:finish():402] scan save: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/conda-environment.yaml conda-environment.yaml
+2024-03-27 16:56:15,781 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 10
+2024-03-27 16:56:15,782 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:15,782 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 10
+2024-03-27 16:56:15,783 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:15,783 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 10
+2024-03-27 16:56:15,783 INFO    SenderThread:768820 [file_pusher.py:finish():172] shutting down file pusher
+2024-03-27 16:56:16,204 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: poll_exit
+2024-03-27 16:56:16,204 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: poll_exit
+2024-03-27 16:56:16,277 INFO    wandb-upload_1:768820 [upload_job.py:push():131] Uploaded file /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/requirements.txt
+2024-03-27 16:56:16,456 INFO    wandb-upload_2:768820 [upload_job.py:push():131] Uploaded file /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/wandb-summary.json
+2024-03-27 16:56:16,529 INFO    wandb-upload_3:768820 [upload_job.py:push():131] Uploaded file /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/config.yaml
+2024-03-27 16:56:16,554 INFO    wandb-upload_0:768820 [upload_job.py:push():131] Uploaded file /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/output.log
+2024-03-27 16:56:16,644 INFO    wandb-upload_4:768820 [upload_job.py:push():131] Uploaded file /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/files/conda-environment.yaml
+2024-03-27 16:56:16,844 INFO    Thread-11 (_thread_body):768820 [sender.py:transition_state():613] send defer: 11
+2024-03-27 16:56:16,845 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:16,845 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 11
+2024-03-27 16:56:16,846 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:16,846 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 11
+2024-03-27 16:56:16,846 INFO    SenderThread:768820 [file_pusher.py:join():178] waiting for file pusher
+2024-03-27 16:56:16,847 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 12
+2024-03-27 16:56:16,847 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:16,847 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 12
+2024-03-27 16:56:16,848 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:16,848 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 12
+2024-03-27 16:56:16,848 INFO    SenderThread:768820 [file_stream.py:finish():595] file stream finish called
+2024-03-27 16:56:17,044 INFO    SenderThread:768820 [file_stream.py:finish():599] file stream finish is done
+2024-03-27 16:56:17,044 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 13
+2024-03-27 16:56:17,045 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:17,045 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 13
+2024-03-27 16:56:17,045 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:17,046 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 13
+2024-03-27 16:56:17,046 INFO    SenderThread:768820 [sender.py:transition_state():613] send defer: 14
+2024-03-27 16:56:17,046 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 16:56:17,047 INFO    HandlerThread:768820 [handler.py:handle_request_defer():172] handle defer: 14
+2024-03-27 16:56:17,047 DEBUG   SenderThread:768820 [sender.py:send():378] send: final
+2024-03-27 16:56:17,047 DEBUG   SenderThread:768820 [sender.py:send():378] send: footer
+2024-03-27 16:56:17,048 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: defer
+2024-03-27 16:56:17,048 INFO    SenderThread:768820 [sender.py:send_request_defer():609] handle sender defer: 14
+2024-03-27 16:56:17,049 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: poll_exit
+2024-03-27 16:56:17,050 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: poll_exit
+2024-03-27 16:56:17,051 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: poll_exit
+2024-03-27 16:56:17,052 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: server_info
+2024-03-27 16:56:17,053 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: poll_exit
+2024-03-27 16:56:17,054 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: server_info
+2024-03-27 16:56:17,058 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: get_summary
+2024-03-27 16:56:17,058 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: sampled_history
+2024-03-27 16:56:17,059 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 16:56:17,059 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: job_info
+2024-03-27 16:56:17,247 DEBUG   SenderThread:768820 [sender.py:send_request():405] send_request: job_info
+2024-03-27 16:56:17,247 INFO    MainThread:768820 [wandb_run.py:_footer_history_summary_info():3851] rendering history
+2024-03-27 16:56:17,248 INFO    MainThread:768820 [wandb_run.py:_footer_history_summary_info():3883] rendering summary
+2024-03-27 16:56:17,248 INFO    MainThread:768820 [wandb_run.py:_footer_sync_info():3810] logging synced files
+2024-03-27 16:56:17,248 DEBUG   HandlerThread:768820 [handler.py:handle_request():146] handle_request: shutdown
+2024-03-27 16:56:17,249 INFO    HandlerThread:768820 [handler.py:finish():869] shutting down handler
+2024-03-27 16:56:18,060 INFO    WriterThread:768820 [datastore.py:close():296] close: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_165543-louxdxeh/run-louxdxeh.wandb
+2024-03-27 16:56:18,247 INFO    SenderThread:768820 [sender.py:finish():1521] shutting down sender
+2024-03-27 16:56:18,247 INFO    SenderThread:768820 [file_pusher.py:finish():172] shutting down file pusher
+2024-03-27 16:56:18,248 INFO    SenderThread:768820 [file_pusher.py:join():178] waiting for file pusher

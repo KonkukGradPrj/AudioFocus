@@ -1,0 +1,134 @@
+2024-03-27 19:54:35,462 INFO    StreamThr :845325 [internal.py:wandb_internal():86] W&B internal server running at pid: 845325, started at: 2024-03-27 19:54:35.462295
+2024-03-27 19:54:35,463 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: status
+2024-03-27 19:54:35,466 INFO    WriterThread:845325 [datastore.py:open_for_write():87] open: /home/hyeons/workspace/AudioFocus/wandb/offline-run-20240327_195435-egmqzuvp/run-egmqzuvp.wandb
+2024-03-27 19:54:35,513 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: run_start
+2024-03-27 19:54:35,544 DEBUG   HandlerThread:845325 [system_info.py:__init__():26] System info init
+2024-03-27 19:54:35,544 DEBUG   HandlerThread:845325 [system_info.py:__init__():41] System info init done
+2024-03-27 19:54:35,544 INFO    HandlerThread:845325 [system_monitor.py:start():194] Starting system monitor
+2024-03-27 19:54:35,544 INFO    SystemMonitor:845325 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-03-27 19:54:35,544 INFO    HandlerThread:845325 [system_monitor.py:probe():214] Collecting system info
+2024-03-27 19:54:35,545 INFO    SystemMonitor:845325 [interfaces.py:start():190] Started cpu monitoring
+2024-03-27 19:54:35,547 INFO    SystemMonitor:845325 [interfaces.py:start():190] Started disk monitoring
+2024-03-27 19:54:35,548 INFO    SystemMonitor:845325 [interfaces.py:start():190] Started gpu monitoring
+2024-03-27 19:54:35,549 INFO    SystemMonitor:845325 [interfaces.py:start():190] Started memory monitoring
+2024-03-27 19:54:35,550 INFO    SystemMonitor:845325 [interfaces.py:start():190] Started network monitoring
+2024-03-27 19:54:35,584 DEBUG   HandlerThread:845325 [system_info.py:probe():150] Probing system
+2024-03-27 19:54:35,588 DEBUG   HandlerThread:845325 [gitlib.py:_init_repo():56] git repository is invalid
+2024-03-27 19:54:35,588 DEBUG   HandlerThread:845325 [system_info.py:probe():198] Probing system done
+2024-03-27 19:54:35,588 DEBUG   HandlerThread:845325 [system_monitor.py:probe():223] {'os': 'Linux-5.15.0-89-generic-x86_64-with-glibc2.31', 'python': '3.10.14', 'heartbeatAt': '2024-03-27T10:54:35.585153', 'startedAt': '2024-03-27T10:54:35.446108', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '/home/hyeons/workspace/AudioFocus/run.py', 'codePathLocal': 'run.py', 'codePath': 'run.py', 'host': 'hyeons-MS-7D42', 'username': 'hyeons', 'executable': '/home/hyeons/miniconda3/envs/gp2/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 2358.4595833333333, 'min': 800.0, 'max': 4400.0}, 'cpu_freq_per_core': [{'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 801.515, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}, {'current': 2500.0, 'min': 800.0, 'max': 4400.0}], 'disk': {'/': {'total': 915.3232879638672, 'used': 335.6304244995117}}, 'gpu': 'NVIDIA GeForce RTX 3060', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 3060', 'memory_total': 12884901888}], 'memory': {'total': 31.13253402709961}}
+2024-03-27 19:54:35,588 INFO    HandlerThread:845325 [system_monitor.py:probe():224] Finished collecting system info
+2024-03-27 19:54:35,588 INFO    HandlerThread:845325 [system_monitor.py:probe():227] Publishing system info
+2024-03-27 19:54:35,588 DEBUG   HandlerThread:845325 [system_info.py:_save_conda():207] Saving list of conda packages installed into the current environment
+2024-03-27 19:54:38,338 DEBUG   HandlerThread:845325 [system_info.py:_save_conda():219] Saving conda packages done
+2024-03-27 19:54:38,339 INFO    HandlerThread:845325 [system_monitor.py:probe():229] Finished publishing system info
+2024-03-27 19:54:38,427 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: python_packages
+2024-03-27 19:54:40,465 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 19:54:40,466 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: status_report
+2024-03-27 19:54:43,107 DEBUG   SenderThread:845325 [sender.py:send():378] send: exit
+2024-03-27 19:54:43,107 INFO    SenderThread:845325 [sender.py:send_exit():585] handling exit code: 1
+2024-03-27 19:54:43,107 INFO    SenderThread:845325 [sender.py:send_exit():587] handling runtime: 7
+2024-03-27 19:54:43,107 INFO    SenderThread:845325 [sender.py:_save_file():1365] saving file wandb-summary.json with policy end
+2024-03-27 19:54:43,107 INFO    SenderThread:845325 [sender.py:send_exit():593] send defer
+2024-03-27 19:54:43,107 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,107 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 0
+2024-03-27 19:54:43,107 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,107 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 0
+2024-03-27 19:54:43,107 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 1
+2024-03-27 19:54:43,107 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,107 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 1
+2024-03-27 19:54:43,107 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,107 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 1
+2024-03-27 19:54:43,107 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 2
+2024-03-27 19:54:43,107 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,107 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 2
+2024-03-27 19:54:43,107 INFO    HandlerThread:845325 [system_monitor.py:finish():203] Stopping system monitor
+2024-03-27 19:54:43,108 DEBUG   SystemMonitor:845325 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-03-27 19:54:43,108 DEBUG   SystemMonitor:845325 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-03-27 19:54:43,108 DEBUG   SystemMonitor:845325 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-03-27 19:54:43,108 INFO    HandlerThread:845325 [interfaces.py:finish():202] Joined cpu monitor
+2024-03-27 19:54:43,108 INFO    HandlerThread:845325 [interfaces.py:finish():202] Joined disk monitor
+2024-03-27 19:54:43,132 INFO    HandlerThread:845325 [interfaces.py:finish():202] Joined gpu monitor
+2024-03-27 19:54:43,132 INFO    HandlerThread:845325 [interfaces.py:finish():202] Joined memory monitor
+2024-03-27 19:54:43,132 INFO    HandlerThread:845325 [interfaces.py:finish():202] Joined network monitor
+2024-03-27 19:54:43,133 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 2
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 3
+2024-03-27 19:54:43,133 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,133 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 3
+2024-03-27 19:54:43,133 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 3
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 4
+2024-03-27 19:54:43,133 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,133 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 4
+2024-03-27 19:54:43,133 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 4
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 5
+2024-03-27 19:54:43,133 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,133 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 5
+2024-03-27 19:54:43,133 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 5
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 6
+2024-03-27 19:54:43,133 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,133 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 6
+2024-03-27 19:54:43,133 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 6
+2024-03-27 19:54:43,133 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 7
+2024-03-27 19:54:43,133 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 19:54:43,133 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,133 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 7
+2024-03-27 19:54:43,134 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: status_report
+2024-03-27 19:54:43,134 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 7
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 8
+2024-03-27 19:54:43,134 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,134 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 8
+2024-03-27 19:54:43,134 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 8
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 9
+2024-03-27 19:54:43,134 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,134 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 9
+2024-03-27 19:54:43,134 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 9
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 10
+2024-03-27 19:54:43,134 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,134 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 10
+2024-03-27 19:54:43,134 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 10
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 11
+2024-03-27 19:54:43,134 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,134 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 11
+2024-03-27 19:54:43,134 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 11
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 12
+2024-03-27 19:54:43,134 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,134 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 12
+2024-03-27 19:54:43,134 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 12
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 13
+2024-03-27 19:54:43,134 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,134 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 13
+2024-03-27 19:54:43,134 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 13
+2024-03-27 19:54:43,134 INFO    SenderThread:845325 [sender.py:transition_state():613] send defer: 14
+2024-03-27 19:54:43,135 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: defer
+2024-03-27 19:54:43,135 INFO    HandlerThread:845325 [handler.py:handle_request_defer():172] handle defer: 14
+2024-03-27 19:54:43,135 DEBUG   SenderThread:845325 [sender.py:send():378] send: final
+2024-03-27 19:54:43,135 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: defer
+2024-03-27 19:54:43,135 INFO    SenderThread:845325 [sender.py:send_request_defer():609] handle sender defer: 14
+2024-03-27 19:54:43,135 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: poll_exit
+2024-03-27 19:54:43,135 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: poll_exit
+2024-03-27 19:54:43,135 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: poll_exit
+2024-03-27 19:54:43,135 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: poll_exit
+2024-03-27 19:54:43,135 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: server_info
+2024-03-27 19:54:43,135 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: get_summary
+2024-03-27 19:54:43,135 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: server_info
+2024-03-27 19:54:43,136 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: sampled_history
+2024-03-27 19:54:43,136 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 19:54:43,136 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: job_info
+2024-03-27 19:54:43,136 DEBUG   SenderThread:845325 [sender.py:send_request():405] send_request: job_info
+2024-03-27 19:54:43,136 INFO    MainThread:845325 [wandb_run.py:_footer_history_summary_info():3851] rendering history
+2024-03-27 19:54:43,136 INFO    MainThread:845325 [wandb_run.py:_footer_history_summary_info():3883] rendering summary
+2024-03-27 19:54:43,136 DEBUG   HandlerThread:845325 [handler.py:handle_request():146] handle_request: shutdown
+2024-03-27 19:54:43,136 INFO    HandlerThread:845325 [handler.py:finish():869] shutting down handler
+2024-03-27 19:54:44,136 INFO    WriterThread:845325 [datastore.py:close():296] close: /home/hyeons/workspace/AudioFocus/wandb/offline-run-20240327_195435-egmqzuvp/run-egmqzuvp.wandb
+2024-03-27 19:54:44,137 INFO    SenderThread:845325 [sender.py:finish():1521] shutting down sender

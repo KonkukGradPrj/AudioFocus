@@ -1,0 +1,84 @@
+[NeMo W 2024-03-27 17:20:49 modelPT:165] If you intend to do training or fine-tuning, please call the ModelPT.setup_training_data() method and provide a valid configuration file to setup the train data loader.
+    Train config :
+    manifest_filepath: /manifests/combined_fisher_swbd_voxceleb12_librispeech/train.json
+    sample_rate: 16000
+    labels: null
+    batch_size: 64
+    shuffle: true
+    is_tarred: false
+    tarred_audio_filepaths: null
+    tarred_shard_strategy: scatter
+    augmentor:
+      noise:
+        manifest_path: /manifests/noise/rir_noise_manifest.json
+        prob: 0.5
+        min_snr_db: 0
+        max_snr_db: 15
+      speed:
+        prob: 0.5
+        sr: 16000
+        resample_type: kaiser_fast
+        min_speed_rate: 0.95
+        max_speed_rate: 1.05
+    num_workers: 15
+    pin_memory: true
+[NeMo W 2024-03-27 17:20:49 modelPT:172] If you intend to do validation, please call the ModelPT.setup_validation_data() or ModelPT.setup_multiple_validation_data() method and provide a valid configuration file to setup the validation data loader(s).
+    Validation config :
+    manifest_filepath: /manifests/combined_fisher_swbd_voxceleb12_librispeech/dev.json
+    sample_rate: 16000
+    labels: null
+    batch_size: 128
+    shuffle: false
+    num_workers: 15
+    pin_memory: true
+[NeMo I 2024-03-27 17:20:49 features:289] PADDING: 16
+[NeMo I 2024-03-27 17:20:49 save_restore_connector:249] Model EncDecSpeakerLabelModel was successfully restored from /home/hyeons/.cache/huggingface/hub/models--nvidia--speakerverification_en_titanet_large/snapshots/0dc382f40121a5fbd34db10a2bb04d826c2be6a8/speakerverification_en_titanet_large.nemo.
+  0%|                                                                                             | 0/524 [00:01<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 65, in <module>
+    run(vars(args))
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 53, in run
+    trainer.train()
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 68, in train
+    test_logs.update(self.test())
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 128, in test
+    predict_utter, predict_vec = self.model.test(mixed_voices, target_voices)
+  File "/home/hyeons/workspace/AudioFocus/src/models/base.py", line 33, in test
+    feat = self.speaker_model.extract_feature(target_voice)
+  File "/home/hyeons/workspace/AudioFocus/src/models/speaker/titanet.py", line 14, in extract_feature
+    return self.model.infer_segment(wav)[0]
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/nemo/collections/asr/models/label_models.py", line 492, in infer_segment
+    logits, emb = self.forward(input_signal=audio_signal, input_signal_length=audio_signal_len)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/nemo/core/classes/common.py", line 1095, in __call__
+    instance._validate_input_types(input_types=input_types, ignore_collections=self.ignore_collections, **kwargs)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/nemo/core/classes/common.py", line 237, in _validate_input_types
+    raise TypeError(
+TypeError: Input shape mismatch occured for input_signal in module EncDecSpeakerLabelModel :
+Input shape expected = (batch, time) |
+Input shape found : torch.Size([1, 5, 1, 166960])
+Traceback (most recent call last):
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 65, in <module>
+    run(vars(args))
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 53, in run
+    trainer.train()
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 68, in train
+    test_logs.update(self.test())
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 128, in test
+    predict_utter, predict_vec = self.model.test(mixed_voices, target_voices)
+  File "/home/hyeons/workspace/AudioFocus/src/models/base.py", line 33, in test
+    feat = self.speaker_model.extract_feature(target_voice)
+  File "/home/hyeons/workspace/AudioFocus/src/models/speaker/titanet.py", line 14, in extract_feature
+    return self.model.infer_segment(wav)[0]
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/nemo/collections/asr/models/label_models.py", line 492, in infer_segment
+    logits, emb = self.forward(input_signal=audio_signal, input_signal_length=audio_signal_len)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/nemo/core/classes/common.py", line 1095, in __call__
+    instance._validate_input_types(input_types=input_types, ignore_collections=self.ignore_collections, **kwargs)
+  File "/home/hyeons/miniconda3/envs/gp2/lib/python3.10/site-packages/nemo/core/classes/common.py", line 237, in _validate_input_types
+    raise TypeError(
+TypeError: Input shape mismatch occured for input_signal in module EncDecSpeakerLabelModel :
+Input shape expected = (batch, time) |
+Input shape found : torch.Size([1, 5, 1, 166960])
