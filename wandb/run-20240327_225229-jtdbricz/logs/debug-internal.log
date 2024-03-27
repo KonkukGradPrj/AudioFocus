@@ -95,3 +95,90 @@
 2024-03-27 22:53:35,302 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
 2024-03-27 22:53:35,935 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
 2024-03-27 22:53:37,302 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:39,303 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:41,116 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:53:41,303 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:43,303 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:45,304 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:47,111 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:53:47,304 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:48,395 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: stop_status
+2024-03-27 22:53:48,395 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 22:53:48,395 DEBUG   SenderThread:990970 [sender.py:send_request():405] send_request: stop_status
+2024-03-27 22:53:49,305 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:52,124 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:53:53,305 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:55,306 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:57,306 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:53:57,637 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:00,477 DEBUG   SenderThread:990970 [sender.py:send():378] send: stats
+2024-03-27 22:54:01,307 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:02,927 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:03,308 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:03,395 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: stop_status
+2024-03-27 22:54:03,395 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 22:54:03,395 DEBUG   SenderThread:990970 [sender.py:send_request():405] send_request: stop_status
+2024-03-27 22:54:05,308 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:07,308 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:08,044 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:09,309 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:11,309 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:13,309 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:13,440 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:17,310 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:18,395 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: stop_status
+2024-03-27 22:54:18,395 DEBUG   SenderThread:990970 [sender.py:send_request():405] send_request: stop_status
+2024-03-27 22:54:18,396 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 22:54:19,311 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:21,170 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:23,312 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:26,305 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:27,312 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:29,313 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:30,477 DEBUG   SenderThread:990970 [sender.py:send():378] send: stats
+2024-03-27 22:54:31,313 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:31,477 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:33,314 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:33,395 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: stop_status
+2024-03-27 22:54:33,395 DEBUG   SenderThread:990970 [sender.py:send_request():405] send_request: stop_status
+2024-03-27 22:54:33,396 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 22:54:35,314 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:37,015 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:39,315 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:41,315 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:42,584 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:43,316 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:45,316 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:47,317 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:47,609 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:48,395 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: stop_status
+2024-03-27 22:54:48,395 DEBUG   SenderThread:990970 [sender.py:send_request():405] send_request: stop_status
+2024-03-27 22:54:48,396 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 22:54:49,317 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:52,990 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:53,318 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:55,318 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:57,319 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:54:58,335 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:54:59,319 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:00,477 DEBUG   SenderThread:990970 [sender.py:send():378] send: stats
+2024-03-27 22:55:01,320 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:03,320 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:03,395 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: stop_status
+2024-03-27 22:55:03,395 DEBUG   SenderThread:990970 [sender.py:send_request():405] send_request: stop_status
+2024-03-27 22:55:03,396 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 22:55:03,686 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:55:07,321 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:08,717 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:55:09,321 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:11,322 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:13,322 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:14,492 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:55:15,322 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:17,323 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:18,395 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: stop_status
+2024-03-27 22:55:18,396 DEBUG   SenderThread:990970 [sender.py:send_request():405] send_request: stop_status
+2024-03-27 22:55:18,396 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: internal_messages
+2024-03-27 22:55:19,323 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
+2024-03-27 22:55:21,187 DEBUG   HandlerThread:990970 [handler.py:handle_request():146] handle_request: status_report
+2024-03-27 22:55:23,324 INFO    Thread-12 :990970 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/hyeons/workspace/AudioFocus/wandb/run-20240327_225229-jtdbricz/files/output.log
