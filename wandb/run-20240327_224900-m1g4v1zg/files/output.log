@@ -95,3 +95,41 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+100%|██████████| 82/82 [03:08<00:00,  2.30s/it]
+Traceback (most recent call last):
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 65, in <module>
+    run(vars(args))
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 53, in run
+    trainer.train()
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 68, in train
+    test_logs.update(self.test())
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 140, in test
+    wer = torch.sum(torch.stack(wer_list)).item() / N
+TypeError: expected Tensor as element 0 in argument 0, but got float
+Traceback (most recent call last):
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 65, in <module>
+    run(vars(args))
+  File "/home/hyeons/workspace/AudioFocus/run.py", line 53, in run
+    trainer.train()
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 68, in train
+    test_logs.update(self.test())
+  File "/home/hyeons/workspace/AudioFocus/src/trainers/base.py", line 140, in test
+    wer = torch.sum(torch.stack(wer_list)).item() / N
+TypeError: expected Tensor as element 0 in argument 0, but got float
