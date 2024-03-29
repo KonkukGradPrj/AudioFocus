@@ -78,10 +78,11 @@ class BaseTrainer():
                 
                 with torch.no_grad():
                     _, target = self.vanilla(clean_voices)
+
                 _, predict = self.model(mixed_voices, target_voices)
                 
                 loss = self.loss_fn(predict, target)
-
+                
                 # backward
                 scaler.scale(loss).backward()
 
@@ -117,8 +118,6 @@ class BaseTrainer():
             self.logger.log_to_wandb(self.step)
 
     def test(self) -> dict: 
-        cfg = self.cfg
-               
         ####################
         ## performance 
         loss_list, wer_list = [], [] 
