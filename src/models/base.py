@@ -9,30 +9,21 @@ class Model(nn.Module):
         self.filter = filter
         self.speaker_model = speaker_model
         
-    def forward(self, mixed_voice, target_voice):
+    def forward(self, input_voice, target_voice=None):
         """
         input: 
-            mixed_voice: mixed voice
+            mixed_voice: input voice. mixed voce if target voice is not none else target voice.
             target_voice: sample voice of target voice
 
         output: 
             vector
         """
-        with torch.no_grad():
-            feat = self.speaker_model.extract_feature(target_voice)        
-            emb = self.asr_model.encode(mixed_voice)
-            
-        emb = self.filter(emb, feat)
-        return self.asr_model.decode(emb)
-
-    def test(self, mixed_voice, target_voice): 
-        """
-        return text, vector
-        """
-        with torch.no_grad():
-            feat = self.speaker_model.extract_feature(target_voice)
-            emb = self.asr_model.encode(mixed_voice)
+        if target_voice is not None:
+            with torch.no_grad():
+                feat = self.speaker_model.extract_feature(input_voice)        
+                emb = self.asr_model.encode(input_voice)
             emb = self.filter(emb, feat)
-            
-            text, vec = self.asr_model.run(emb)
-            return text, vec
+            return self.asr_model.decode(emb)
+        else:
+            emb = self.asr_model.encode(input_voice)
+            return self.asr_model.run(emb)

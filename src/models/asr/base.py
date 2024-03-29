@@ -12,14 +12,14 @@ class BaseASR(nn.Module, metaclass=ABCMeta):
         return cls.name
     
     @abstractmethod
-    def encode(self):
+    def encode(self, wav):
+        pass
+    
+    @abstractmethod
+    def decode(self):
         pass
     
     @abstractmethod
     def run(self, emb):
         # return text, vec
-        pass
-    
-    @abstractmethod
-    def textualize(self):
         pass

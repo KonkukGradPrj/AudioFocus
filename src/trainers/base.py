@@ -57,7 +57,7 @@ class BaseTrainer():
     def train(self):
         cfg = self.cfg
         test_every = cfg.base_test_every
-        num_epochs = cfg.num_epochs
+        num_epochs = cfg.base_epochs
         
         scaler = torch.cuda.amp.GradScaler(enabled=cfg.use_amp)
 
@@ -77,9 +77,9 @@ class BaseTrainer():
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 
                 with torch.no_grad():
-                    target = self.vanilla(clean_voices)
-                predict = self.model(mixed_voices, target_voices)
-
+                    _, target = self.vanilla(clean_voices)
+                _, predict = self.model(mixed_voices, target_voices)
+                
                 loss = self.loss_fn(predict, target)
 
                 # backward
@@ -126,18 +126,19 @@ class BaseTrainer():
         for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.test_loader):   
             with torch.no_grad():     
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-                predict_text, predict_vec = self.model.test(mixed_voices, target_voices)
-                _, target_vec = self.vanilla.test(clean_voices, target_voices)
+                predict_text, predict_vec = self.model(mixed_voices, target_voices)
+                _, target_vec = self.vanilla(clean_voices)
                 loss = self.loss_fn(predict_vec, target_vec)
-                wer = self.wer.compute(references=target_text, predictions=predict_text).mean()
-
+                wer = self.wer.compute(references=target_text, predictions=predict_text)
+                
             n = len(target_text)
             loss_list.append(loss * n)
             wer_list.append(wer * n)
             N += n
+            break
 
         loss = torch.sum(torch.stack(loss_list)).item() / N
-        wer = torch.sum(torch.stack(wer_list)).item() / N
+        wer = torch.sum(torch.tensor(wer_list)).item() / N
         
         pred_logs = {
             'test_loss': loss,

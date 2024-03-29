@@ -38,13 +38,18 @@ class Whisper(DecodingTask, BaseASR):
         mel = torch.stack(mel).squeeze().to(wav.device)
         return self.asr_encoder(mel)
     
-    def forward(self, wav):
-        emb = self.encode(wav)
-        return self.run(emb)[1]
-    
+    def decode(self, emb):
+        """
+        input:
+            embedding
+        output:
+            texts, vec
+        """
+        return self.run(emb)
+
     def run(self, emb):
         """
-        return: texts, vec
+        output: texts, vec
         """
         self.decoder.reset()
         tokenizer: Tokenizer = self.tokenizer
@@ -77,8 +82,7 @@ class Whisper(DecodingTask, BaseASR):
 
         return texts, vector
     
-    def textualize(self, emb):
-        return self._get_text_n_tokens(emb)[0]
+   
     
 
 
