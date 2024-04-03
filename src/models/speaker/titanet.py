@@ -10,7 +10,9 @@ class TitaNet(BaseSpeaker):
     def __init__(self, opt="nvidia/speakerverification_en_titanet_large"):
         super(TitaNet, self).__init__()
         self.model = nemo_asr.models.EncDecSpeakerLabelModel.from_pretrained(opt)
-    
+        for param in self.model.parameters():
+            param.requires_grad = False
+            
     @torch.no_grad
     def extract_feature(self, wav):
         features = []

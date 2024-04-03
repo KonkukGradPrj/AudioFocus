@@ -47,7 +47,7 @@ class BaseTrainer():
         
     def _build_optimizer(self, optimizer_type, optimizer_cfg):
         if optimizer_type == 'adamw':
-            return optim.AdamW(self.model.parameters(), **optimizer_cfg)
+            return optim.AdamW(self.model.filter.parameters(), **optimizer_cfg)
         else:
             raise ValueError
 
@@ -56,8 +56,8 @@ class BaseTrainer():
 
     def train(self):
         cfg = self.cfg
-        test_every = cfg.base_test_every
-        num_epochs = cfg.base_epochs
+        test_every = cfg.test_every
+        num_epochs = cfg.epochs
         
         scaler = torch.cuda.amp.GradScaler(enabled=cfg.use_amp)
 
@@ -70,26 +70,28 @@ class BaseTrainer():
         self.logger.update_log(**test_logs)
         self.logger.log_to_wandb(self.step)
         
-        for _ in range(int(num_epochs)):                
+        for epoch in range(int(num_epochs)):                
             # train        
             self.model.train()
-            for mixed_voices, clean_voices, _, target_voices in tqdm.tqdm(self.train_loader):   
+            for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.train_loader):   
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 
                 with torch.no_grad():
                     _, target = self.vanilla(clean_voices)
 
-                _, predict = self.model(mixed_voices, target_voices)
-                
-                loss = self.loss_fn(predict, target)
-                
+                soft_targets = nn.functional.softmax(target / 5, dim=-1) # temperature - 5
+                predict_text, student_logits = self.model(mixed_voices, target_voices)
+                soft_prob = nn.functional.log_softmax(student_logits / 5, dim=-1)
+                loss = self.loss_fn(soft_prob, soft_targets)
+                wer = self.wer.compute(references=target_text, predictions=predict_text)
+
                 # backward
                 scaler.scale(loss).backward()
 
                 # gradient clipping
                 # unscales the gradients of optimizer's assigned params in-place
                 scaler.unscale_(self.optimizer)
-                torch.nn.utils.clip_grad_norm_(self.model.parameters(), cfg.clip_grad_norm)
+                torch.nn.utils.clip_grad_norm_(self.model.filter.parameters(), cfg.clip_grad_norm)
                 scaler.step(self.optimizer)
                 scaler.update()
 
@@ -97,6 +99,8 @@ class BaseTrainer():
                 train_logs = {}                
                 train_logs['train_loss'] = loss.item()
                 train_logs['lr'] = self.lr_scheduler.get_lr()[0]
+                train_logs['wer'] = wer
+                train_logs['epoch'] = epoch
 
                 self.logger.update_log(**train_logs)
                 if self.step % cfg.log_every == 0:
@@ -120,27 +124,21 @@ class BaseTrainer():
     def test(self) -> dict: 
         ####################
         ## performance 
-        loss_list, wer_list = [], [] 
+        wer_list = []
         N = 0  
         for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.test_loader):   
             with torch.no_grad():     
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-                predict_text, predict_vec = self.model(mixed_voices, target_voices)
-                _, target_vec = self.vanilla(clean_voices)
-                loss = self.loss_fn(predict_vec, target_vec)
+                predict_text, _ = self.model(mixed_voices, target_voices)
                 wer = self.wer.compute(references=target_text, predictions=predict_text)
                 
             n = len(target_text)
-            loss_list.append(loss * n)
             wer_list.append(wer * n)
             N += n
-            break
 
-        loss = torch.sum(torch.stack(loss_list)).item() / N
         wer = torch.sum(torch.tensor(wer_list)).item() / N
         
         pred_logs = {
-            'test_loss': loss,
             'test_wer': wer,
         }
 

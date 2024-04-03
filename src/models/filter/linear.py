@@ -8,17 +8,17 @@ class LinearFilter(BaseFilter):
     def __init__(self, in_dim=192, hidden_dim=288, out_dim=384):
         super().__init__()
         self.scale = nn.Sequential(nn.Linear(in_dim, hidden_dim),
-                                   nn.LayerNorm1d(hidden_dim),
+                                   nn.LayerNorm(hidden_dim),
                                    nn.ReLU(),
                                    nn.Linear(hidden_dim, out_dim),
-                                   nn.LayerNorm1d(out_dim),
+                                   nn.LayerNorm(out_dim),
                                    nn.ReLU())
         
         self.shift = nn.Sequential(nn.Linear(in_dim, hidden_dim),
-                                   nn.LayerNorm1d(hidden_dim),
+                                   nn.LayerNorm(hidden_dim),
                                    nn.ReLU(),
                                    nn.Linear(hidden_dim, out_dim),
-                                   nn.LayerNorm1d(out_dim),
+                                   nn.LayerNorm(out_dim),
                                    nn.ReLU())
 
     def forward(self, emb, feat):

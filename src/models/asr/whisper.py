@@ -29,10 +29,13 @@ class Whisper(DecodingTask, BaseASR):
         self.asr_encoder = self.model.encoder
         self.asr_decoder = self.model.decoder
 
+        for param in self.asr_encoder.parameters():
+            param.requires_grad = False
+
     def encode(self, wav):
         mel = []
         for w in wav:
-            w = whisper.pad_or_trim(w)
+            w = whisper.pad_or_trim(w.flatten())
             m = whisper.log_mel_spectrogram(w)
             mel.append(m)
         mel = torch.stack(mel).squeeze().to(wav.device)

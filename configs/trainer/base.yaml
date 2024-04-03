@@ -6,7 +6,7 @@ use_amp: True
 
 ################
 # train
-base_epochs: 100
+epochs: 100
 clip_grad_norm: 0.5
 
 optimizer_type: 'adamw'
@@ -28,5 +28,5 @@ scheduler:
 
 ################ 
 # evaluation
-log_every: 1000       # per_step
-base_test_every: 5    # per_epoch
+log_every: 100       # per_step
+test_every: 5    # per_epoch
