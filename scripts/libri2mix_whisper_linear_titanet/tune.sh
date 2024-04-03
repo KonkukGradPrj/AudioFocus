@@ -10,7 +10,7 @@ for seed in {1..5}; do
     for lr in "${learning_rate[@]}"; do
         for wd in "${weight_decay[@]}"; do
             python run.py \
-                --overrides group_name=tune_linear_titanet \
+                --overrides group_name=tune_reslinear_titanet \
                 --overrides exp_name=lr"$lr"_wd"$wd" \
                 --overrides trainer.optimizer.lr="$lr" \
                 --overrides trainer.optimizer.weight_decay="$wd" \

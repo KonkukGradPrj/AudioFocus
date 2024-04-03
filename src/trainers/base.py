@@ -73,7 +73,7 @@ class BaseTrainer():
         for epoch in range(int(num_epochs)):                
             # train        
             self.model.train()
-            for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.train_loader):   
+            for mixed_voices, clean_voices, _, target_voices in tqdm.tqdm(self.train_loader):   
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 
                 with torch.no_grad():
@@ -132,32 +132,34 @@ class BaseTrainer():
             self.logger.update_log(**test_logs)
             self.logger.log_to_wandb(self.step)
 
-    def test(self) -> dict:
+    def test(self):
         wer = 0.0
         N = 0
         base_wer = getattr(self, 'base_wer', 0.0)
         
-        for mixed_voices, clean_voices, target_text, target_voices in self.test_loader:
+        for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.test_loader):
             with torch.no_grad():     
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 predict_text = self.model.transcribe(mixed_voices, target_voices)
+                n = len(target_text)
                 
                 # Compute wer only if base_wer is not set, implying it's the first run
                 if base_wer == 0.0:
                     baseline_text = self.vanilla.transcribe(mixed_voices)
-                    base_wer += self.wer.compute(references=target_text, predictions=baseline_text)
+                    base_wer += self.wer.compute(references=target_text, predictions=baseline_text) * n
+                wer += self.wer.compute(references=target_text, predictions=predict_text) * n
                 
-                wer += self.wer.compute(references=target_text, predictions=predict_text)
-                N += len(target_text)
+                N += n
         
         # Calculate metrics outside the loop
         wer /= N
-        test_logs = {'test_wer': wer}
         
         if base_wer != 0.0:
             base_wer /= N
             test_logs['base_wer'] = base_wer
             self.base_wer = base_wer  # Store the base_wer for subsequent runs
+        
+        test_logs = {'test_wer': wer, 'base_wer': self.base_wer}
         
         return test_logs
 

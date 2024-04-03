@@ -29,4 +29,4 @@ scheduler:
 ################ 
 # evaluation
 log_every: 100       # per_step
-test_every: 5    # per_epoch
+test_every: -1    # per_epoch
