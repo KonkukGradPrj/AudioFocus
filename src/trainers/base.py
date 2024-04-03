@@ -63,9 +63,9 @@ class BaseTrainer():
 
         test_logs = {}
         test_logs['epoch'] = self.epoch
-        if test_every != -1:
-            self.model.eval()
-            test_logs.update(self.test())
+        
+        self.model.eval()
+        test_logs.update(self.test())
 
         self.logger.update_log(**test_logs)
         self.logger.log_to_wandb(self.step)
@@ -83,12 +83,18 @@ class BaseTrainer():
                 student_logits = self.model(mixed_voices, target_voices)
                 soft_prob = nn.functional.log_softmax(student_logits / 5, dim=-1)
                 loss = self.loss_fn(soft_prob, soft_targets)
-
-                predict_text = self.model.transcribe(mixed_voices, target_voices)
-                wer = self.wer.compute(references=target_text, predictions=predict_text)
-                print("predict:", predict_text[0])
-                print("target:",target_text[0])
-                print("wer": wer)
+                
+                # with torch.no_grad():
+                #     predict_text = self.model.transcribe(mixed_voices, target_voices)
+                #     vanllia_text = self.vanilla.transcribe(mixed_voices)
+                # wer = self.wer.compute(references=target_text, predictions=predict_text)
+                # vanilla_wer = self.wer.compute(references=target_text, predictions=vanllia_text)
+                # print("vanilla: ", vanllia_text[0])
+                # print("predict:", predict_text[0])
+                # print("target:",target_text[0])
+                # print("train_wer: ", wer)
+                # print("vanilla_wer: ", vanilla_wer)
+                # print("loss: ", loss)
                 # backward
                 scaler.scale(loss).backward()
 
@@ -103,7 +109,8 @@ class BaseTrainer():
                 train_logs = {}                
                 train_logs['train_loss'] = loss.item()
                 train_logs['lr'] = self.lr_scheduler.get_lr()[0]
-                train_logs['wer'] = wer
+                # train_logs['train_wer'] = wer
+                # train_logs['vanilla_wer'] = vanilla_wer
                 train_logs['epoch'] = epoch
 
                 self.logger.update_log(**train_logs)
@@ -125,23 +132,32 @@ class BaseTrainer():
             self.logger.update_log(**test_logs)
             self.logger.log_to_wandb(self.step)
 
-    def test(self) -> dict: 
-        ####################
-        ## performance 
-        mixed_voices, clean_voices, target_text, target_voices = next(iter(self.test_loader))
-        with torch.no_grad():     
-            mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-            predict_text = self.model.transcribe(mixed_voices, target_voices)
-            wer = self.wer.compute(references=target_text, predictions=predict_text)
+    def test(self) -> dict:
+        wer = 0.0
+        N = 0
+        base_wer = getattr(self, 'base_wer', 0.0)
         
-        print("target: ", target_text[0])
-        print("predict: ", predict_text[0])
-        print(wer)
-        pred_logs = {
-            'test_wer': wer,
-        }
-
-        test_logs = {}
-        test_logs.update(pred_logs)
-
+        for mixed_voices, clean_voices, target_text, target_voices in self.test_loader:
+            with torch.no_grad():     
+                mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
+                predict_text = self.model.transcribe(mixed_voices, target_voices)
+                
+                # Compute wer only if base_wer is not set, implying it's the first run
+                if base_wer == 0.0:
+                    baseline_text = self.vanilla.transcribe(mixed_voices)
+                    base_wer += self.wer.compute(references=target_text, predictions=baseline_text)
+                
+                wer += self.wer.compute(references=target_text, predictions=predict_text)
+                N += len(target_text)
+        
+        # Calculate metrics outside the loop
+        wer /= N
+        test_logs = {'test_wer': wer}
+        
+        if base_wer != 0.0:
+            base_wer /= N
+            test_logs['base_wer'] = base_wer
+            self.base_wer = base_wer  # Store the base_wer for subsequent runs
+        
         return test_logs
+

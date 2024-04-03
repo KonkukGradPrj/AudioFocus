@@ -17,16 +17,19 @@ class Model(nn.Module):
             target_voice: sample voice of target voice
 
         output: 
-            vectext
+            text
         """
         if target_voice is not None:
-            feat = self.speaker_model.extract_feature(input_voice)        
+            feat = self.speaker_model.extract_feature(target_voice)        
             emb = self.asr_model.encode(input_voice)
             emb = self.filter(emb, feat)
         else:
             emb = self.asr_model.encode(input_voice)
             
-        return self.asr_model.transcribe(emb)
+        transcriptions = []
+        for trans in self.asr_model.transcribe(emb):
+            transcriptions.append(trans.upper().lstrip())
+        return transcriptions
     
     def forward(self, input_voice, target_voice=None):
         """
@@ -38,7 +41,7 @@ class Model(nn.Module):
             embedding_vector
         """
         if target_voice is not None:
-            feat = self.speaker_model.extract_feature(input_voice)        
+            feat = self.speaker_model.extract_feature(target_voice)        
             emb = self.asr_model.encode(input_voice)
             emb = self.filter(emb, feat)
         else:

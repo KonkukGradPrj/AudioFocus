@@ -21,8 +21,27 @@ class LinearFilter(BaseFilter):
                                    nn.LayerNorm(out_dim),
                                    nn.ReLU())
 
+        # Apply the custom weight and bias initialization with a uniform range
+        self.scale.apply(self._init_weights_uniform_small_range)
+        self.shift.apply(self._init_weights_uniform_small_range)
+
+    def _init_weights_uniform_small_range(self, m):
+        """
+        Initialize weights and biases uniformly in the range [-1e-4, 1e-4].
+        """
+        if isinstance(m, nn.Linear):
+            nn.init.uniform_(m.weight, a=-1e-3, b=1e-3)
+            if m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+
     def forward(self, emb, feat):
         # repeat to fit the shape. (N, emb_dim) => (N, seq_len, emb_dim)
         alpha = self.scale(feat).unsqueeze(1).repeat(1, emb.shape[1], 1)
         beta = self.shift(feat).unsqueeze(1).repeat(1, emb.shape[1], 1)
-        return alpha * emb + beta
+
+        # sanitiy check
+        # print(emb -(alpha * emb + beta + emb))
+        
+        # residual connection
+        emb = alpha * emb + beta + emb
+        return emb

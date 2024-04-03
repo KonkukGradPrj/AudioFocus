@@ -32,6 +32,9 @@ class Whisper(DecodingTask, BaseASR):
         for param in self.asr_encoder.parameters():
             param.requires_grad = False
 
+        for param in self.asr_decoder.parameters():
+            param.requires_grad = False
+
     def encode(self, wav):
         mel = []
         for w in wav:
