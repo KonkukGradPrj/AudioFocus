@@ -77,14 +77,18 @@ class BaseTrainer():
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 
                 with torch.no_grad():
-                    _, target = self.vanilla(clean_voices)
+                    target = self.vanilla(clean_voices)
 
                 soft_targets = nn.functional.softmax(target / 5, dim=-1) # temperature - 5
-                predict_text, student_logits = self.model(mixed_voices, target_voices)
+                student_logits = self.model(mixed_voices, target_voices)
                 soft_prob = nn.functional.log_softmax(student_logits / 5, dim=-1)
                 loss = self.loss_fn(soft_prob, soft_targets)
-                wer = self.wer.compute(references=target_text, predictions=predict_text)
 
+                predict_text = self.model.transcribe(mixed_voices, target_voices)
+                wer = self.wer.compute(references=target_text, predictions=predict_text)
+                print("predict:", predict_text[0])
+                print("target:",target_text[0])
+                print("wer": wer)
                 # backward
                 scaler.scale(loss).backward()
 
@@ -124,20 +128,15 @@ class BaseTrainer():
     def test(self) -> dict: 
         ####################
         ## performance 
-        wer_list = []
-        N = 0  
-        for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.test_loader):   
-            with torch.no_grad():     
-                mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-                predict_text, _ = self.model(mixed_voices, target_voices)
-                wer = self.wer.compute(references=target_text, predictions=predict_text)
-                
-            n = len(target_text)
-            wer_list.append(wer * n)
-            N += n
-
-        wer = torch.sum(torch.tensor(wer_list)).item() / N
+        mixed_voices, clean_voices, target_text, target_voices = next(iter(self.test_loader))
+        with torch.no_grad():     
+            mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
+            predict_text = self.model.transcribe(mixed_voices, target_voices)
+            wer = self.wer.compute(references=target_text, predictions=predict_text)
         
+        print("target: ", target_text[0])
+        print("predict: ", predict_text[0])
+        print(wer)
         pred_logs = {
             'test_wer': wer,
         }

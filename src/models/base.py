@@ -8,7 +8,26 @@ class Model(nn.Module):
         self.asr_model = asr_model
         self.filter = filter
         self.speaker_model = speaker_model
-        
+    
+    @torch.no_grad()
+    def transcribe(self, input_voice, target_voice=None):
+        """
+        input: 
+            mixed_voice: input voice. mixed voce if target voice is not none else target voice.
+            target_voice: sample voice of target voice
+
+        output: 
+            vectext
+        """
+        if target_voice is not None:
+            feat = self.speaker_model.extract_feature(input_voice)        
+            emb = self.asr_model.encode(input_voice)
+            emb = self.filter(emb, feat)
+        else:
+            emb = self.asr_model.encode(input_voice)
+            
+        return self.asr_model.transcribe(emb)
+    
     def forward(self, input_voice, target_voice=None):
         """
         input: 
@@ -16,14 +35,12 @@ class Model(nn.Module):
             target_voice: sample voice of target voice
 
         output: 
-            vector
+            embedding_vector
         """
         if target_voice is not None:
-            with torch.no_grad():
-                feat = self.speaker_model.extract_feature(input_voice)        
-                emb = self.asr_model.encode(input_voice)
+            feat = self.speaker_model.extract_feature(input_voice)        
+            emb = self.asr_model.encode(input_voice)
             emb = self.filter(emb, feat)
-            return self.asr_model.decode(emb)
         else:
             emb = self.asr_model.encode(input_voice)
-            return self.asr_model.run(emb)
+        return emb

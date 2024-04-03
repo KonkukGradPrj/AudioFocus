@@ -15,11 +15,8 @@ class BaseASR(nn.Module, metaclass=ABCMeta):
     def encode(self, wav):
         pass
     
-    @abstractmethod
-    def decode(self):
-        pass
     
     @abstractmethod
-    def run(self, emb):
-        # return text, vec
+    def transcribe(self, emb):
+        # return text
         pass
