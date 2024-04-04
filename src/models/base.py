@@ -27,6 +27,7 @@ class Model(nn.Module):
             emb = self.asr_model.encode(input_voice)
             
         transcriptions = []
+
         for trans in self.asr_model.transcribe(emb):
             transcriptions.append(trans.upper().lstrip())
         return transcriptions

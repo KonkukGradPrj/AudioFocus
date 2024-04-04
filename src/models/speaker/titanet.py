@@ -13,7 +13,6 @@ class TitaNet(BaseSpeaker):
         for param in self.model.parameters():
             param.requires_grad = False
             
-    @torch.no_grad
     def extract_feature(self, wav):
         features = []
         for w in wav:

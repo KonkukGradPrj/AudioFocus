@@ -68,20 +68,28 @@ class BaseTrainer():
 
         self.logger.update_log(**test_logs)
         self.logger.log_to_wandb(self.step)
-        
-        for epoch in range(int(num_epochs)):                
+
+        temperature_scale = cfg.temperature ** 2
+        for _ in range(int(num_epochs)):                
             # train        
             self.model.train()
             for mixed_voices, clean_voices, _, target_voices in tqdm.tqdm(self.train_loader):   
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-                
                 with torch.no_grad():
                     target = self.vanilla(clean_voices)
 
-                soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1) # temperature - 5
+                soft_targets = nn.functional.log_softmax(target / cfg.temperature, dim=-1)
                 student_logits = self.model(mixed_voices, target_voices)
                 soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
-                loss = torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * (cfg.temperature**2)
+
+                # Compute the difference once
+                diff = soft_targets - soft_prob
+                
+                # Use .mean() for more efficient and readable code
+                loss = (soft_targets * diff).mean() * temperature_scale                
+
+                # backward
+                scaler.scale(loss).backward()
                 
                 # with torch.no_grad():
                 #     predict_text = self.model.transcribe(mixed_voices, target_voices)
@@ -94,11 +102,10 @@ class BaseTrainer():
                 # print("train_wer: ", wer)
                 # print("vanilla_wer: ", vanilla_wer)
                 # print("loss: ", loss)
-                # backward
-                scaler.scale(loss).backward()
 
                 # gradient clipping
                 # unscales the gradients of optimizer's assigned params in-place
+                
                 scaler.unscale_(self.optimizer)
                 torch.nn.utils.clip_grad_norm_(self.model.filter.parameters(), cfg.clip_grad_norm)
                 scaler.step(self.optimizer)
@@ -133,7 +140,7 @@ class BaseTrainer():
     def test(self):
         wer = 0.0
         base_wer = 0.0
-
+        
         N = 0
         for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.test_loader):
             with torch.no_grad():     
@@ -146,7 +153,7 @@ class BaseTrainer():
                 wer += self.wer.compute(references=target_text, predictions=predict_text) * n
                 
                 N += n
-        
+
         wer /= N
         base_wer /= N
 

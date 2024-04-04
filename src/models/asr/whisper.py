@@ -61,7 +61,6 @@ class Whisper(DecodingTask, BaseASR):
         tokens, sum_logprobs, no_speech_probs = self._main_loop(audio_features, tokens)
 
         # reshape the tensors to have (n_audio, n_group) as the first two dimensions
-        vector = audio_features[:: self.n_group]
         no_speech_probs = no_speech_probs[:: self.n_group]
         assert audio_features.shape[0] == len(no_speech_probs) == n_audio
 
@@ -79,7 +78,3 @@ class Whisper(DecodingTask, BaseASR):
         
         return texts
     
-   
-    
-
-
