@@ -38,7 +38,6 @@ class BaseTrainer():
         cfg.scheduler.first_cycle_steps = len(train_loader) 
         self.lr_scheduler = self._build_scheduler(self.optimizer, cfg.scheduler)
 
-        self.loss_fn = nn.CrossEntropyLoss()
         self.wer = load("wer") # https://huggingface.co/learn/audio-course/en/chapter5/evaluation
                 
         self.epoch = 0
@@ -79,10 +78,10 @@ class BaseTrainer():
                 with torch.no_grad():
                     target = self.vanilla(clean_voices)
 
-                soft_targets = nn.functional.softmax(target / 5, dim=-1) # temperature - 5
+                soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1) # temperature - 5
                 student_logits = self.model(mixed_voices, target_voices)
-                soft_prob = nn.functional.log_softmax(student_logits / 5, dim=-1)
-                loss = self.loss_fn(soft_prob, soft_targets)
+                soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
+                loss = torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * (cfg.temperature**2)
                 
                 # with torch.no_grad():
                 #     predict_text = self.model.transcribe(mixed_voices, target_voices)
@@ -111,7 +110,6 @@ class BaseTrainer():
                 train_logs['lr'] = self.lr_scheduler.get_lr()[0]
                 # train_logs['train_wer'] = wer
                 # train_logs['vanilla_wer'] = vanilla_wer
-                train_logs['epoch'] = epoch
 
                 self.logger.update_log(**train_logs)
                 if self.step % cfg.log_every == 0:
@@ -134,32 +132,24 @@ class BaseTrainer():
 
     def test(self):
         wer = 0.0
+        base_wer = 0.0
+
         N = 0
-        base_wer = getattr(self, 'base_wer', 0.0)
-        
         for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.test_loader):
             with torch.no_grad():     
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 predict_text = self.model.transcribe(mixed_voices, target_voices)
                 n = len(target_text)
                 
-                # Compute wer only if base_wer is not set, implying it's the first run
-                if base_wer == 0.0:
-                    baseline_text = self.vanilla.transcribe(mixed_voices)
-                    base_wer += self.wer.compute(references=target_text, predictions=baseline_text) * n
+                baseline_text = self.vanilla.transcribe(mixed_voices)
+                base_wer += self.wer.compute(references=target_text, predictions=baseline_text) * n
                 wer += self.wer.compute(references=target_text, predictions=predict_text) * n
                 
                 N += n
         
-        # Calculate metrics outside the loop
         wer /= N
-        
-        if base_wer != 0.0:
-            base_wer /= N
-            test_logs['base_wer'] = base_wer
-            self.base_wer = base_wer  # Store the base_wer for subsequent runs
-        
-        test_logs = {'test_wer': wer, 'base_wer': self.base_wer}
+        base_wer /= N
+
+        test_logs = {'test_wer': wer, 'base_wer': base_wer}
         
         return test_logs
-
