@@ -78,15 +78,11 @@ class BaseTrainer():
                 with torch.no_grad():
                     target = self.vanilla(clean_voices)
 
-                soft_targets = nn.functional.log_softmax(target / cfg.temperature, dim=-1)
+                soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1)
                 student_logits = self.model(mixed_voices, target_voices)
                 soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
 
-                # Compute the difference once
-                diff = soft_targets - soft_prob
-                
-                # Use .mean() for more efficient and readable code
-                loss = (soft_targets * diff).mean() * temperature_scale                
+                loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale                
 
                 # backward
                 scaler.scale(loss).backward()
@@ -131,9 +127,8 @@ class BaseTrainer():
             # log evaluation
             test_logs = {}
             test_logs['epoch'] = self.epoch
-            if (self.epoch % test_every == 0) and (test_every != -1):
-                self.model.eval()
-                test_logs.update(self.test())
+            self.model.eval()
+            test_logs.update(self.test())
             self.logger.update_log(**test_logs)
             self.logger.log_to_wandb(self.step)
 
@@ -153,7 +148,7 @@ class BaseTrainer():
                 wer += self.wer.compute(references=target_text, predictions=predict_text) * n
                 
                 N += n
-
+                
         wer /= N
         base_wer /= N
 
