@@ -3,19 +3,21 @@ import torchaudio
 import json
 import os
 import random
+import tqdm
 from torchaudio.datasets import LIBRISPEECH
 from torch.utils.data import Dataset
 
 class Libri2Mix(Dataset):
-    def __init__(self, root_dir="/home/hyeons/workspace/AudioFocus/data/dataset", train=True, download=False):
+    def __init__(self, root_dir="/home/hyeons/workspace/AudioFocus/data/dataset/", train=True, download=False):
         """
         Initialize the dataset by downloading LibriSpeech and preparing or loading the metadata.
         """
         self.root_dir = root_dir
         self.url = 'train-clean-100' if train else 'test-clean'
-        self.metadata_path = os.path.join(self.root_dir, f"{self.url}_metadata.json")
-        
         self.dataset = LIBRISPEECH(root=self.root_dir, url=self.url, download=download)
+        self.root_dir = os.path.join(self.root_dir, "LibriSpeech/" + self.url)
+        self.metadata_path = os.path.join(self.root_dir, "metadata.json")
+        
         self.noise_multiplier = 0.9
 
         if not os.path.exists(self.metadata_path):
@@ -28,7 +30,7 @@ class Libri2Mix(Dataset):
         Generate metadata for each item in the dataset and save it to a file.
         """
         metadata = []
-        for idx in range(len(self.dataset)):
+        for idx in tqdm.tqdm(range(len(self.dataset))):
             _, _, _, speaker_id, chapter_id, _ = self.dataset[idx]
             additional_sample_path = self._find_additional_sample_path(str(speaker_id), str(chapter_id))
             # Assuming noise_idx calculation and other steps are similar to __getitem__
@@ -82,13 +84,15 @@ class Libri2Mix(Dataset):
         # Process the noise waveform
         noise_waveform = noise_waveform * self.noise_multiplier
 
-        # Make sure both waveforms are of the same length
-        min_length = min(target_waveform.shape[1], noise_waveform.shape[1])
-        target_waveform = target_waveform[:, :min_length]
-        noise_waveform = noise_waveform[:, :min_length]
+        # Adjust waveforms to be of the same length by creating new tensors
+        if target_waveform.shape[1] > noise_waveform.shape[1]:
+            pad_length = target_waveform.shape[1] - noise_waveform.shape[1]
+            noise_waveform_padded = torch.nn.functional.pad(noise_waveform, (0, pad_length))
+        else:
+            noise_waveform_padded = noise_waveform[:, :target_waveform.shape[1]]
 
-        # Mix target and noise waveforms
-        mixed_waveform = target_waveform + noise_waveform
+        # Mix target and noise voice
+        mixed_waveform = target_waveform + noise_waveform_padded
 
         # Load the additional sample waveform
         additional_sample_path = metadata_item['additional_sample_path']

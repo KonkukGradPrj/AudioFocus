@@ -39,7 +39,7 @@ class BaseTrainer():
         self.lr_scheduler = self._build_scheduler(self.optimizer, cfg.scheduler)
 
         self.wer = load("wer") # https://huggingface.co/learn/audio-course/en/chapter5/evaluation
-                
+        self.base_wer = None
         self.epoch = 0
         self.step = 0
 
@@ -78,12 +78,20 @@ class BaseTrainer():
                 with torch.no_grad():
                     target = self.vanilla(clean_voices)
 
-                soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1)
+                # # distill loss
+                # soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1)
+                # student_logits = self.model(mixed_voices, target_voices)
+                # soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
+                # loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale                
+
+
                 student_logits = self.model(mixed_voices, target_voices)
-                soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
+                # # MSE loss
+                # loss = F.mse_loss(student_logits, target)
 
-                loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale                
-
+                # MAE Loss
+                loss = F.l1_loss(student_logits, target)
+                    
                 # backward
                 scaler.scale(loss).backward()
                 
@@ -139,19 +147,23 @@ class BaseTrainer():
         N = 0
         for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.test_loader):
             with torch.no_grad():     
+                n = len(target_text)
+
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 predict_text = self.model.transcribe(mixed_voices, target_voices)
-                n = len(target_text)
-                
-                baseline_text = self.vanilla.transcribe(mixed_voices)
-                base_wer += self.wer.compute(references=target_text, predictions=baseline_text) * n
                 wer += self.wer.compute(references=target_text, predictions=predict_text) * n
+                
+                # calculate baseline in the first time.
+                if self.base_wer is None:
+                    baseline_text = self.vanilla.transcribe(mixed_voices)
+                    base_wer += self.wer.compute(references=target_text, predictions=baseline_text) * n
                 
                 N += n
                 
         wer /= N
-        base_wer /= N
+        if self.base_wer is None:
+            self.base_wer = base_wer / N
 
-        test_logs = {'test_wer': wer, 'base_wer': base_wer}
-        
+        test_logs = {'test_wer': wer, 'base_wer': self.base_wer}
+        print(test_logs)
         return test_logs
