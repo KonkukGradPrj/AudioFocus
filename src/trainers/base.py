@@ -43,6 +43,12 @@ class BaseTrainer():
         self.epoch = 0
         self.step = 0
 
+    def _distill_loss(self, student_logits, target, temperature_scale):
+        # distill loss
+        soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1)
+        soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
+        distill_loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale       
+        return distill_loss
         
     def _build_optimizer(self, optimizer_type, optimizer_cfg):
         if optimizer_type == 'adamw':
@@ -77,22 +83,23 @@ class BaseTrainer():
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 with torch.no_grad():
                     target = self.vanilla(clean_voices)
-
-                # distill loss
-                soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1)
                 student_logits = self.model(mixed_voices, target_voices)
-                soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
-                
-                distill_loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale                
 
-                # MSE loss
-                mse_loss = F.mse_loss(student_logits, target)
+                if cfg.loss == 'distill':
+                    loss = self._distill_loss(student_logits, target, temperature_scale)
+                elif cfg.loss == 'l2':
+                    loss = F.mse_loss(student_logits, target)                    
+                elif cfg.loss == 'l1':
+                    loss = F.l1_loss(student_logits, target)
+                elif cfg.loss == 'all':
+                    distill_loss = self._distill_loss(student_logits, target, temperature_scale)
+                    mse_loss = F.mse_loss(student_logits, target)                    
+                    l1_loss = F.l1_loss(student_logits, target)
+                    loss = distill_loss + mse_loss + l1_loss
 
-                # MAE Loss
-                l1_loss = F.l1_loss(student_logits, target)
-                
-                # backward
-                loss = distill_loss + mse_loss + l1_loss
+                    train_logs['distill_loss'] = distill_loss.item()
+                    train_logs['mse_loss'] = mse_loss.item()
+                    train_logs['l1_loss'] = l1_loss.item()
                 
                 scaler.scale(loss).backward()
                 
@@ -130,10 +137,8 @@ class BaseTrainer():
                 # log        
                 train_logs = {}                
                 train_logs['train_loss'] = loss.item()
-                train_logs['distill_loss'] = distill_loss.item()
-                train_logs['mse_loss'] = mse_loss.item()
-                train_logs['l1_loss'] = l1_loss.item()
                 train_logs['lr'] = self.lr_scheduler.get_lr()[0]
+                train_logs['avg_gradients'] = avg_gradients
 
                 # train_logs['train_wer'] = wer
                 # train_logs['vanilla_wer'] = vanilla_wer

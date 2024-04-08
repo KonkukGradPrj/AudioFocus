@@ -6,8 +6,10 @@ use_amp: True
 
 ################
 # train
-epochs: 10
+epochs: 50
 clip_grad_norm: 0.5
+
+loss: 'l2'
 
 optimizer_type: 'adamw'
 optimizer:
