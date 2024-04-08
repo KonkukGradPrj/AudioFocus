@@ -78,23 +78,35 @@ class BaseTrainer():
                 with torch.no_grad():
                     target = self.vanilla(clean_voices)
 
-                # # distill loss
-                # soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1)
-                # student_logits = self.model(mixed_voices, target_voices)
-                # soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
-                # loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale                
-
-
+                # distill loss
+                soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1)
                 student_logits = self.model(mixed_voices, target_voices)
-                # # MSE loss
-                # loss = F.mse_loss(student_logits, target)
+                soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
+                
+                distill_loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale                
+
+                # MSE loss
+                mse_loss = F.mse_loss(student_logits, target)
 
                 # MAE Loss
-                loss = F.l1_loss(student_logits, target)
-                    
+                l1_loss = F.l1_loss(student_logits, target)
+                
                 # backward
+                loss = distill_loss + mse_loss + l1_loss
+                
                 scaler.scale(loss).backward()
                 
+                ################
+                #  gradient norm
+                gradient_norms = {name: torch.norm(param.grad).item() for name, param in self.model.filter.named_parameters() \
+                                if param.grad is not None}
+                gradients = []
+                for _, norm in gradient_norms.items():
+                    gradients.append(norm)  
+                avg_gradients = sum(gradients) / len(gradients) if gradients else 0
+
+
+
                 # with torch.no_grad():
                 #     predict_text = self.model.transcribe(mixed_voices, target_voices)
                 #     vanllia_text = self.vanilla.transcribe(mixed_voices)
@@ -118,7 +130,11 @@ class BaseTrainer():
                 # log        
                 train_logs = {}                
                 train_logs['train_loss'] = loss.item()
+                train_logs['distill_loss'] = distill_loss.item()
+                train_logs['mse_loss'] = mse_loss.item()
+                train_logs['l1_loss'] = l1_loss.item()
                 train_logs['lr'] = self.lr_scheduler.get_lr()[0]
+
                 # train_logs['train_wer'] = wer
                 # train_logs['vanilla_wer'] = vanilla_wer
 

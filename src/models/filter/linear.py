@@ -30,7 +30,8 @@ class LinearFilter(BaseFilter):
         Initialize weights and biases uniformly in the range [-1e-4, 1e-4].
         """
         if isinstance(m, nn.Linear):
-            nn.init.uniform_(m.weight, a=-1e-3, b=1e-3)
+            # nn.init.uniform_(m.weight, a=-1e-3, b=1e-3)
+            nn.init.normal_(m.weight, mean=0.0, std=0.01)
             if m.bias is not None:
                 nn.init.constant_(m.bias, 0)
 
