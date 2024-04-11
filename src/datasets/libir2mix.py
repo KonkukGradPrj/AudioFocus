@@ -8,7 +8,7 @@ from torchaudio.datasets import LIBRISPEECH
 from torch.utils.data import Dataset
 
 class Libri2Mix(Dataset):
-    def __init__(self, root_dir="/home/hyeons/workspace/AudioFocus/data/dataset/", train=True, download=False):
+    def __init__(self, root_dir="/home/shu/Desktop/Yongjin/gradproj/model/AudioFocus/data/dataset/", train=True, download=False):
         """
         Initialize the dataset by downloading LibriSpeech and preparing or loading the metadata.
         """

@@ -1,5 +1,5 @@
-project_name: 'AudioFocus'
-entity: 'hyeonsio'
+project_name: 'audiofocus'
+entity: 'rladyd020'
 group_name: 'test'
 exp_name: 'test'
 device: 'cuda:0'
