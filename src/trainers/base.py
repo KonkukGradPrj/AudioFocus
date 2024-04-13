@@ -43,10 +43,12 @@ class BaseTrainer():
         self.epoch = 0
         self.step = 0
 
-    def _distill_loss(self, student_logits, target, temperature_scale):
+    def _distill_loss(self, student_logits, target, temperature):
+        temperature_scale = temperature ** 2
+        
         # distill loss
-        soft_targets = nn.functional.softmax(target / cfg.temperature, dim=-1)
-        soft_prob = nn.functional.log_softmax(student_logits / cfg.temperature, dim=-1)
+        soft_targets = nn.functional.softmax(target / temperature, dim=-1)
+        soft_prob = nn.functional.log_softmax(student_logits / temperature, dim=-1)
         distill_loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale       
         return distill_loss
         
@@ -75,7 +77,7 @@ class BaseTrainer():
         self.logger.update_log(**test_logs)
         self.logger.log_to_wandb(self.step)
 
-        temperature_scale = cfg.temperature ** 2
+        
         for _ in range(int(num_epochs)):                
             # train        
             self.model.train()
@@ -86,13 +88,13 @@ class BaseTrainer():
                 student_logits = self.model(mixed_voices, target_voices)
 
                 if cfg.loss == 'distill':
-                    loss = self._distill_loss(student_logits, target, temperature_scale)
+                    loss = self._distill_loss(student_logits, target, cfg.temperature)
                 elif cfg.loss == 'l2':
                     loss = F.mse_loss(student_logits, target)                    
                 elif cfg.loss == 'l1':
                     loss = F.l1_loss(student_logits, target)
                 elif cfg.loss == 'all':
-                    distill_loss = self._distill_loss(student_logits, target, temperature_scale)
+                    distill_loss = self._distill_loss(student_logits, target, cfg.temperature)
                     mse_loss = F.mse_loss(student_logits, target)                    
                     l1_loss = F.l1_loss(student_logits, target)
                     loss = distill_loss + mse_loss + l1_loss
@@ -112,7 +114,12 @@ class BaseTrainer():
                     gradients.append(norm)  
                 avg_gradients = sum(gradients) / len(gradients) if gradients else 0
 
-
+                ################
+                #  weight scale
+                weight_scale = 0.0
+                for param in self.model.filter.parameters():
+                    weight_scale += torch.sum(param ** 2)
+                weight_scale = torch.sqrt(weight_scale)
 
                 # with torch.no_grad():
                 #     predict_text = self.model.transcribe(mixed_voices, target_voices)
@@ -139,6 +146,7 @@ class BaseTrainer():
                 train_logs['train_loss'] = loss.item()
                 train_logs['lr'] = self.lr_scheduler.get_lr()[0]
                 train_logs['avg_gradients'] = avg_gradients
+                train_logs['weight_scale'] = weight_scale
 
                 # train_logs['train_wer'] = wer
                 # train_logs['vanilla_wer'] = vanilla_wer

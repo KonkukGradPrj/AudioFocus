@@ -1,0 +1,12 @@
+trainer:
+  optimizer:
+    lr: 0.000001
+    weight_decay: 0.0001
+
+defaults:
+- base
+- dataset: libri2mix
+- model: whisper_attention_titanet
+- vanilla: whisper
+- trainer: base
+- _self_

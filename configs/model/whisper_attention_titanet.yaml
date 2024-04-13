@@ -1,0 +1,4 @@
+defaults:
+- asr: whisper
+- filter: attention
+- speaker: titanet

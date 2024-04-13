@@ -1,9 +1,9 @@
 from .base import BaseFilter
 from .linear import LinearFilter
-from .mlp import MLPFilter
+from .attention import AttentionFilter
 
 __all__ = [
     'BaseFilter',
     'LinearFilter', 
-    'MLPFilter'
+    'AttentionFilter'
 ]
