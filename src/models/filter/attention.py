@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from einops import rearrange
+from einops.layers.torch import Rearrange
 from src.models.filter.base import BaseFilter
 
 
@@ -20,7 +21,7 @@ def posemb_sincos_1d(patches, temperature=10000, dtype=torch.float32):
 
 
 class CrossAttention(nn.Module):
-    def __init__(self, feat_dim=192, emb_dim=384, heads=4, dim_head=72):
+    def __init__(self, feat_dim=192, emb_dim=384, heads=4, dim_head=96):
         super().__init__()
         self.heads = heads
         self.scale = dim_head ** -0.5
@@ -33,13 +34,10 @@ class CrossAttention(nn.Module):
     def forward(self, emb, feat):
         if feat.dim() == 2:
             feat = feat.unsqueeze(1)
-        if emb.dim() == 2:
-            emb = emb.unsqueeze(1)  
-            
+
         q = rearrange(self.to_q(feat), 'b n (h d) -> b h n d', h=self.heads)
         k = rearrange(self.to_k(emb), 'b n (h d) -> b h n d', h=self.heads)
         v = rearrange(self.to_v(emb), 'b n (h d) -> b h n d', h=self.heads)
-
         # Compute attention scores and apply softmax
         dots = torch.matmul(q, k.transpose(-2, -1)) * self.scale
         attn = F.softmax(dots, dim=-1)
@@ -73,9 +71,11 @@ class AttentionFilter(BaseFilter):
         self.mlp = MLP(emb_dim, hidden_dim, emb_dim)
 
     def forward(self, emb, feat):
-        x = posemb_sincos_1d(emb)
+        pe = posemb_sincos_1d(emb)
+        x = rearrange(emb, 'b ... d -> b (...) d') + pe
+        
         x = self.ln1(x)
-        x = self.cross_attention(x, feat) + x  # Apply residual connection
+        x = self.cross_attention(x, feat) + x  
         x = self.ln2(x)
-        x = self.mlp(x) + x  # Apply another residual connection
+        x = self.mlp(x) + x  
         return x
