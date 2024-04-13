@@ -50,6 +50,7 @@ class BaseTrainer():
         soft_targets = nn.functional.softmax(target / temperature, dim=-1)
         soft_prob = nn.functional.log_softmax(student_logits / temperature, dim=-1)
         distill_loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale       
+        distill_loss = torch.log(distill_loss)
         return distill_loss
         
     def _build_optimizer(self, optimizer_type, optimizer_cfg):
