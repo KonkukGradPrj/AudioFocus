@@ -86,6 +86,7 @@ class BaseTrainer():
                 with torch.no_grad():
                     target = self.vanilla(clean_voices)
                 student_logits = self.model(mixed_voices, target_voices)
+                train_logs = {}                
 
                 if cfg.loss == 'distill':
                     loss = self._distill_loss(student_logits, target, cfg.temperature)
@@ -142,7 +143,6 @@ class BaseTrainer():
                 scaler.update()
 
                 # log        
-                train_logs = {}                
                 train_logs['train_loss'] = loss.item()
                 train_logs['lr'] = self.lr_scheduler.get_lr()[0]
                 train_logs['avg_gradients'] = avg_gradients

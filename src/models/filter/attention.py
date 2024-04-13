@@ -63,7 +63,7 @@ class MLP(nn.Module):
 
 class AttentionFilter(BaseFilter):
     name = 'attention'
-    def __init__(self, feat_dim=192, emb_dim=384, n_head=4, hidden_dim=192):
+    def __init__(self, feat_dim=192, emb_dim=384, n_head=4, hidden_dim=384):
         super().__init__()
         self.ln1 = nn.LayerNorm(emb_dim)
         self.cross_attention = CrossAttention(feat_dim, emb_dim, heads=n_head, dim_head=emb_dim // n_head)
