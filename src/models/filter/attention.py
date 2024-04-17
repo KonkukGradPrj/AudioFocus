@@ -34,7 +34,7 @@ class CrossAttention(nn.Module):
     def forward(self, emb, feat):
         if feat.dim() == 2:
             feat = feat.unsqueeze(1)
-
+        
         q = rearrange(self.to_q(feat), 'b n (h d) -> b h n d', h=self.heads)
         k = rearrange(self.to_k(emb), 'b n (h d) -> b h n d', h=self.heads)
         v = rearrange(self.to_v(emb), 'b n (h d) -> b h n d', h=self.heads)
@@ -48,50 +48,78 @@ class CrossAttention(nn.Module):
         return self.to_out(out)
 
 
-class MLP(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim):
+class CrossAttentionBlock(nn.Module):
+    def __init__(self, feat_dim=192, emb_dim=384, n_head=4, drop_prob=0.1):
         super().__init__()
-        self.fc1 = nn.Linear(input_dim, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, output_dim)
-        self.act = nn.ReLU()
+        self.dropout1 = nn.Dropout(p=drop_prob)
+        self.norm1 = nn.LayerNorm(emb_dim)
+        self.dropout2 = nn.Dropout(p=drop_prob)
+        self.norm2 = nn.LayerNorm(emb_dim)
+        
+        self.cross_attention = CrossAttention(feat_dim, emb_dim, heads=n_head, dim_head=emb_dim // n_head)
+        self.ffn = nn.Sequential(nn.Linear(emb_dim, emb_dim), nn.ReLU(),
+                                 nn.Linear(emb_dim, emb_dim), nn.ReLU(), nn.Dropout(p=drop_prob))
+    def forward(self, emb, feat):
+        _emb = emb
+        emb = self.cross_attention(emb, feat)
 
-    def forward(self, x):
-        x = self.fc1(x)
-        x = self.act(x)
-        x = self.fc2(x)
-        return x
+        emb = self.dropout1(emb)
+        emb = self.norm1(emb + _emb)
+
+        _emb = emb
+        emb = self.ffn(emb)
+      
+        emb = self.dropout2(emb)
+        emb = self.norm2(emb + _emb)
+        return emb
+
 
 class AttentionFilter(BaseFilter):
     name = 'attention'
-    def __init__(self, feat_dim=192, emb_dim=384, n_head=4, hidden_dim=384, drop_prob=0.1):
+    def __init__(self, feat_dim=192, emb_dim=384, n_head=4, drop_prob=0.1):
         super().__init__()
 
-        self.dropout1 = nn.Dropout(p=drop_prob)
-        self.ln1 = nn.LayerNorm(emb_dim)
+        self.dropout0 = nn.Dropout(p=drop_prob)
+        self.ln0 = nn.LayerNorm(emb_dim)
+        
+        self.blocks = nn.ModuleList([
+            CrossAttentionBlock(feat_dim, emb_dim, n_head, drop_prob),
+            CrossAttentionBlock(feat_dim, emb_dim, n_head, drop_prob),
+            CrossAttentionBlock(feat_dim, emb_dim, n_head, drop_prob),
+            CrossAttentionBlock(feat_dim, emb_dim, n_head, drop_prob)
+        ])
+        
+    def _init_weights_gaus(self, m):
+        """
+        Initialize weights and biases uniformly in the range [-1e-4, 1e-4].
+        """
+        if isinstance(m, nn.Linear):
+            nn.init.normal_(m.weight, mean=0.0, std=0.001)
+            if m.bias is not None:
+                nn.init.constant_(m.bias, 0)
 
-        self.cross_attention = CrossAttention(feat_dim, emb_dim, heads=n_head, dim_head=emb_dim // n_head)
-        self.dropout2 = nn.Dropout(p=drop_prob)
-        self.ln2 = nn.LayerNorm(emb_dim)
 
-        self.mlp = MLP(emb_dim, hidden_dim, emb_dim)
-        self.dropout3 = nn.Dropout(p=drop_prob)
-        self.ln3 = nn.LayerNorm(emb_dim)
+    def forward(self, emb, feat, idx=-1):
+        """
+        Forward pass with optional block selection.
+        
+        Args:
+            emb (Tensor): The embedding tensor.
+            feat (Tensor): Feature tensor.
+            idx (int, optional): Block index to run. Defaults to -1, which runs all blocks.
 
-    def forward(self, emb, feat):
+        Returns:
+            Tensor: The output tensor after processing.
+        """
+        # Add positional encoding to the embedding
         pe = posemb_sincos_1d(emb)
-        
-        x = rearrange(emb, 'b ... d -> b (...) d') + pe
-        
-        _x = x
-        x = self.dropout1(x)
-        x = self.ln1(x)        
-        x = self.cross_attention(x, feat) + _x  
+        emb = rearrange(emb, 'b ... d -> b (...) d') + pe
 
-        _x = x
-        x = self.dropout2(x)
-        x = self.ln2(x)
-        x = self.mlp(x) + _x  
+        # Process either one block specified by idx or all blocks
+        if idx == -1:
+            for block in self.blocks:
+                emb = block(emb, feat)
+        else:
+            emb = self.blocks[idx](emb, feat)
 
-        x = self.ln3(x)
-
-        return x
+        return emb

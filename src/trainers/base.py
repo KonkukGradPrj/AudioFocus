@@ -29,7 +29,6 @@ class BaseTrainer():
         self.logger = logger
         self.model = model.to(self.device)
         self.vanilla = vanilla.to(self.device)
-        
         self.train_loader = train_loader
         self.test_loader = test_loader
 
@@ -40,18 +39,9 @@ class BaseTrainer():
 
         self.wer = load("wer") # https://huggingface.co/learn/audio-course/en/chapter5/evaluation
         self.base_wer = None
+        self.baseline_text = None
         self.epoch = 0
         self.step = 0
-
-    def _distill_loss(self, student_logits, target, temperature):
-        temperature_scale = temperature ** 2
-        
-        # distill loss
-        soft_targets = nn.functional.softmax(target / temperature, dim=-1)
-        soft_prob = nn.functional.log_softmax(student_logits / temperature, dim=-1)
-        distill_loss =  torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * temperature_scale       
-        distill_loss = torch.log(distill_loss)
-        return distill_loss
         
     def _build_optimizer(self, optimizer_type, optimizer_cfg):
         if optimizer_type == 'adamw':
@@ -86,25 +76,17 @@ class BaseTrainer():
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 with torch.no_grad():
                     target = self.vanilla(clean_voices)
-                student_logits = self.model(mixed_voices, target_voices)
+                student_logits = self.model(mixed_voices, target_voices, cfg.filter_every)
                 train_logs = {}                
-
-                if cfg.loss == 'distill':
-                    loss = self._distill_loss(student_logits, target, cfg.temperature)
-                elif cfg.loss == 'l2':
+                if cfg.loss == 'l2':
                     loss = F.mse_loss(student_logits, target)                    
                 elif cfg.loss == 'l1':
                     loss = F.l1_loss(student_logits, target)
-                elif cfg.loss == 'cross':
-                    loss = F.cross_entropy(student_logits, target, label_smoothing=0.1)
                 elif cfg.loss == 'all':
-                    distill_loss = 0.1 *self._distill_loss(student_logits, target, cfg.temperature)
                     mse_loss = F.mse_loss(student_logits, target)                    
                     l1_loss = F.l1_loss(student_logits, target)
-                    # loss = distill_loss + mse_loss + l1_loss
-                    loss =  distill_loss + mse_loss + l1_loss
+                    loss =  mse_loss + l1_loss
 
-                    train_logs['distill_loss'] = distill_loss.item()
                     train_logs['mse_loss'] = mse_loss.item()
                     train_logs['l1_loss'] = l1_loss.item()
                 
@@ -131,14 +113,12 @@ class BaseTrainer():
                 scaler.step(self.optimizer)
                 scaler.update()
 
+                ################
                 # log        
                 train_logs['train_loss'] = loss.item()
                 train_logs['lr'] = self.lr_scheduler.get_lr()[0]
                 train_logs['avg_gradients'] = avg_gradients
                 train_logs['weight_scale'] = weight_scale
-
-                # train_logs['train_wer'] = wer
-                # train_logs['vanilla_wer'] = vanilla_wer
 
                 self.logger.update_log(**train_logs)
                 if self.step % cfg.log_every == 0:
@@ -168,7 +148,7 @@ class BaseTrainer():
                 n = len(target_text)
 
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-                predict_text = self.model.transcribe(mixed_voices, target_voices)
+                predict_text = self.model.transcribe(mixed_voices, target_voices, self.cfg.filter_every)
                 wer += self.wer.compute(references=target_text, predictions=predict_text) * n
                 
                 # calculate baseline in the first time.
@@ -181,7 +161,11 @@ class BaseTrainer():
         wer /= N
         if self.base_wer is None:
             self.base_wer = base_wer / N
+            self.baseline_text = baseline_text[0]
 
         test_logs = {'test_wer': wer, 'base_wer': self.base_wer}
         print(test_logs)
+        print('target:', target_text[0])
+        print('vanilla:', self.baseline_text)
+        print('predict:', predict_text[0])
         return test_logs

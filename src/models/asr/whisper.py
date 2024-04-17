@@ -16,7 +16,6 @@ from whisper.decoding import *
 from src.models.asr.base import BaseASR
 
 # https://github.com/openai/whisper/tree/main/whisper
-
 class Whisper(DecodingTask, BaseASR):
     name = 'whisper'
     def __init__(self, opt='tiny.en'):
@@ -29,20 +28,21 @@ class Whisper(DecodingTask, BaseASR):
         self.asr_encoder = self.model.encoder
         self.asr_decoder = self.model.decoder
 
-        for param in self.asr_encoder.parameters():
-            param.requires_grad = False
-
-        for param in self.asr_decoder.parameters():
-            param.requires_grad = False
-
-    def encode(self, wav):
-        mel = []
-        for w in wav:
-            w = whisper.pad_or_trim(w.flatten())
-            m = whisper.log_mel_spectrogram(w)
-            mel.append(m)
-        mel = torch.stack(mel).squeeze().to(wav.device)
-        return self.asr_encoder(mel)
+        # Disable gradient calculations
+        self.asr_decoder.requires_grad_(False)
+        
+        self.asr_encoder.mid_layer_outputs = []
+    
+    def encode(self, emb, idx=-1):
+        if idx == -1:
+            emb = self.asr_encoder(emb)
+        else:
+            if idx == 0:
+                emb = self.asr_encoder.conv1(emb)  
+                emb = self.asr_encoder.conv2(emb)  
+                emb = emb.permute(0, 2, 1)
+            emb = self.asr_encoder.blocks[idx](emb)
+        return emb
     
     def transcribe(self, emb):
         """
@@ -77,4 +77,3 @@ class Whisper(DecodingTask, BaseASR):
         texts: List[str] = [tokenizer.decode(t).strip() for t in tokens]
         
         return texts
-    

@@ -22,15 +22,14 @@ class LinearFilter(BaseFilter):
                                    nn.ReLU())
 
         # Apply the custom weight and bias initialization with a uniform range
-        self.scale.apply(self._init_weights_uniform_small_range)
-        self.shift.apply(self._init_weights_uniform_small_range)
+        self.scale.apply(self._init_weights_gaus)
+        self.shift.apply(self._init_weights_gaus)
 
-    def _init_weights_uniform_small_range(self, m):
+    def _init_weights_gaus(self, m):
         """
         Initialize weights and biases uniformly in the range [-1e-4, 1e-4].
         """
         if isinstance(m, nn.Linear):
-            # nn.init.uniform_(m.weight, a=-1e-3, b=1e-3)
             nn.init.normal_(m.weight, mean=0.0, std=0.01)
             if m.bias is not None:
                 nn.init.constant_(m.bias, 0)
@@ -45,4 +44,4 @@ class LinearFilter(BaseFilter):
         
         # residual connection
         emb = alpha * emb + beta + emb
-        return emb
+        return (emb)
