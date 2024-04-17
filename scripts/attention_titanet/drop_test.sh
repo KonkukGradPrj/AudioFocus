@@ -1,6 +1,6 @@
 #!/bin/bash
 cd ../../
-loss_fn=l2
+loss_fn=cross
 
 python run.py \
     --overrides group_name=attention_titanet \

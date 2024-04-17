@@ -95,6 +95,8 @@ class BaseTrainer():
                     loss = F.mse_loss(student_logits, target)                    
                 elif cfg.loss == 'l1':
                     loss = F.l1_loss(student_logits, target)
+                elif cfg.loss == 'cross':
+                    loss = F.cross_entropy(student_logits, target, label_smoothing=0.1)
                 elif cfg.loss == 'all':
                     distill_loss = 0.1 *self._distill_loss(student_logits, target, cfg.temperature)
                     mse_loss = F.mse_loss(student_logits, target)                    
