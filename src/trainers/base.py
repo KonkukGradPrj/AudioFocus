@@ -10,6 +10,7 @@ import torch.nn.functional as F
 from collections import deque
 from evaluate import load
 from src.common.schedulers import CosineAnnealingWarmupRestarts
+from src.common.train_utils import L1MSELoss
 
 
 class BaseTrainer():
@@ -43,6 +44,13 @@ class BaseTrainer():
         self.epoch = 0
         self.step = 0
         
+        if cfg.loss == 'l2':
+            self.loss_fn = nn.MSELoss()                    
+        elif cfg.loss == 'l1':
+            self.loss_fn = nn.L1Loss()
+        else:
+            self.loss_fn = L1MSELoss()
+
     def _build_optimizer(self, optimizer_type, optimizer_cfg):
         if optimizer_type == 'adamw':
             return optim.AdamW(self.model.filter.parameters(), **optimizer_cfg)
@@ -75,20 +83,16 @@ class BaseTrainer():
             for mixed_voices, clean_voices, _, target_voices in tqdm.tqdm(self.train_loader):   
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 with torch.no_grad():
-                    target = self.vanilla(clean_voices)
-                student_logits = self.model(mixed_voices, target_voices, cfg.filter_every)
-                train_logs = {}                
-                if cfg.loss == 'l2':
-                    loss = F.mse_loss(student_logits, target)                    
-                elif cfg.loss == 'l1':
-                    loss = F.l1_loss(student_logits, target)
-                elif cfg.loss == 'all':
-                    mse_loss = F.mse_loss(student_logits, target)                    
-                    l1_loss = F.l1_loss(student_logits, target)
-                    loss =  mse_loss + l1_loss
+                    target, target_emb_list = self.vanilla(clean_voices, cfg.filter_every)
+                predict, predict_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
+                train_logs = {}             
 
-                    train_logs['mse_loss'] = mse_loss.item()
-                    train_logs['l1_loss'] = l1_loss.item()
+                loss = 0
+                if cfg.filter_every:
+                    for predict, target in zip(predict_emb_list, target_emb_list):                    
+                        loss += self.loss_fn(predict, target)
+                else:
+                    loss = self.loss_fn(predict, target)
                 
                 scaler.scale(loss).backward()
                 

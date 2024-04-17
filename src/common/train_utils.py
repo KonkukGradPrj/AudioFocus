@@ -68,3 +68,32 @@ def collate_fn(batch):
     # Texts don't need padding or stacking, so they can be handled normally
     
     return batch_target_waveforms, batch_mixed_waveforms, batch_texts, batch_additional_waveforms
+
+
+class L1MSELoss(nn.Module):
+    def __init__(self, alpha=0.5):
+        """
+        Initializes the L1MSELoss class.
+        
+        Parameters:
+        alpha (float): Weighting factor for balancing L1 and MSE losses. Defaults to 0.5.
+        """
+        super(L1MSELoss, self).__init__()
+        self.alpha = alpha
+        self.l1_loss = nn.L1Loss()
+        self.mse_loss = nn.MSELoss()
+
+    def forward(self, predictions, targets):
+        """
+        Forward pass for computing the weighted sum of L1 and MSE losses.
+        
+        Parameters:
+        predictions (Tensor): The predicted outputs.
+        targets (Tensor): The ground truth labels.
+        
+        Returns:
+        Tensor: The calculated loss.
+        """
+        loss_l1 = self.l1_loss(predictions, targets)
+        loss_mse = self.mse_loss(predictions, targets)
+        return self.alpha * loss_l1 + (1 - self.alpha) * loss_mse

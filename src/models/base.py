@@ -20,11 +20,11 @@ class Model(nn.Module):
         output: 
             text
         """
-        emb = self.forward(input_voice, target_voice, filter_every)
+        emb, _ = self.forward(input_voice, target_voice, filter_every)
         transcriptions = []
-
         for trans in self.asr_model.transcribe(emb):
             transcriptions.append(trans.upper().lstrip())
+            
         return transcriptions
     
 
@@ -38,19 +38,27 @@ class Model(nn.Module):
             embedding_vector
         """
         # mel-specto
-        mel = [whisper.log_mel_spectrogram(whisper.pad_or_trim(w.flatten())) for w in input_voice]
-        mel = torch.stack(mel).squeeze().to(input_voice[0].device)
+        emb = [whisper.log_mel_spectrogram(whisper.pad_or_trim(iv.flatten())) for iv in input_voice]
+        emb = torch.stack(emb).squeeze().to(input_voice[0].device)
+        
+        mid_layer_embeddings = []
 
         if target_voice is not None: # filtering using target voice
             feat = self.speaker_model.extract_feature(target_voice)        
             if filter_every:
-                emb = mel
                 for idx in range(4): # constant. fix asr model into whisper en.tiny
                     emb = self.asr_model.encode(emb, idx)
                     emb = self.filter(emb, feat, idx)
+                    mid_layer_embeddings.append(emb)
             else:
-                emb = self.asr_model.encode(mel)
+                emb = self.asr_model.encode(emb)
                 emb = self.filter(emb, feat)
         else:
-            emb = self.asr_model.encode(mel)
-        return emb
+            if filter_every:
+                for idx in range(4): # constant. fix asr model into whisper en.tiny
+                    emb = self.asr_model.encode(emb, idx)
+                    mid_layer_embeddings.append(emb)
+            else:
+                emb = self.asr_model.encode(emb)
+
+        return emb, mid_layer_embeddings
