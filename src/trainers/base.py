@@ -83,7 +83,7 @@ class BaseTrainer():
             for mixed_voices, clean_voices, _, target_voices in tqdm.tqdm(self.train_loader):   
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 with torch.no_grad():
-                    target, target_emb_list = self.vanilla(clean_voices, cfg.filter_every)
+                    target, target_emb_list = self.vanilla(clean_voices, filter_every = cfg.filter_every)
                 predict, predict_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
                 train_logs = {}             
 

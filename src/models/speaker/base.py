@@ -13,5 +13,3 @@ class BaseSpeaker(nn.Module, metaclass=ABCMeta):
     def get_name(cls):
         return cls.name
     
-    def extract_feature(self, wav):
-        return  torch.zeros((wav.shape[0], 192))
