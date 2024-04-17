@@ -63,19 +63,35 @@ class MLP(nn.Module):
 
 class AttentionFilter(BaseFilter):
     name = 'attention'
-    def __init__(self, feat_dim=192, emb_dim=384, n_head=4, hidden_dim=384):
+    def __init__(self, feat_dim=192, emb_dim=384, n_head=4, hidden_dim=384, drop_prob=0.1):
         super().__init__()
+
+        self.dropout1 = nn.Dropout(p=drop_prob)
         self.ln1 = nn.LayerNorm(emb_dim)
+
         self.cross_attention = CrossAttention(feat_dim, emb_dim, heads=n_head, dim_head=emb_dim // n_head)
+        self.dropout2 = nn.Dropout(p=drop_prob)
         self.ln2 = nn.LayerNorm(emb_dim)
+
         self.mlp = MLP(emb_dim, hidden_dim, emb_dim)
+        self.dropout3 = nn.Dropout(p=drop_prob)
+        self.ln3 = nn.LayerNorm(emb_dim)
 
     def forward(self, emb, feat):
         pe = posemb_sincos_1d(emb)
+        
         x = rearrange(emb, 'b ... d -> b (...) d') + pe
         
-        x = self.ln1(x)
-        x = self.cross_attention(x, feat) + x  
+        _x = x
+        x = self.dropout1(x)
+        x = self.ln1(x)        
+        x = self.cross_attention(x, feat) + _x  
+
+        _x = x
+        x = self.dropout2(x)
         x = self.ln2(x)
-        x = self.mlp(x) + x  
+        x = self.mlp(x) + _x  
+
+        x = self.ln3(x)
+
         return x

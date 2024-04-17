@@ -96,10 +96,11 @@ class BaseTrainer():
                 elif cfg.loss == 'l1':
                     loss = F.l1_loss(student_logits, target)
                 elif cfg.loss == 'all':
-                    distill_loss = self._distill_loss(student_logits, target, cfg.temperature)
+                    distill_loss = 0.1 *self._distill_loss(student_logits, target, cfg.temperature)
                     mse_loss = F.mse_loss(student_logits, target)                    
                     l1_loss = F.l1_loss(student_logits, target)
-                    loss = distill_loss + mse_loss + l1_loss
+                    # loss = distill_loss + mse_loss + l1_loss
+                    loss =  distill_loss + mse_loss + l1_loss
 
                     train_logs['distill_loss'] = distill_loss.item()
                     train_logs['mse_loss'] = mse_loss.item()
@@ -122,21 +123,6 @@ class BaseTrainer():
                 for param in self.model.filter.parameters():
                     weight_scale += torch.sum(param ** 2)
                 weight_scale = torch.sqrt(weight_scale)
-
-                # with torch.no_grad():
-                #     predict_text = self.model.transcribe(mixed_voices, target_voices)
-                #     vanllia_text = self.vanilla.transcribe(mixed_voices)
-                # wer = self.wer.compute(references=target_text, predictions=predict_text)
-                # vanilla_wer = self.wer.compute(references=target_text, predictions=vanllia_text)
-                # print("vanilla: ", vanllia_text[0])
-                # print("predict:", predict_text[0])
-                # print("target:",target_text[0])
-                # print("train_wer: ", wer)
-                # print("vanilla_wer: ", vanilla_wer)
-                # print("loss: ", loss)
-
-                # gradient clipping
-                # unscales the gradients of optimizer's assigned params in-place
                 
                 scaler.unscale_(self.optimizer)
                 torch.nn.utils.clip_grad_norm_(self.model.filter.parameters(), cfg.clip_grad_norm)
