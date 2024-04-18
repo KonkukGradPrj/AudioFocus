@@ -4,6 +4,7 @@ import torch.nn.functional as F
 
 from einops import rearrange
 from einops.layers.torch import Rearrange
+from whisper.model import sinusoids
 from src.models.filter.base import BaseFilter
 
 
@@ -33,7 +34,7 @@ class CrossAttention(nn.Module):
 
     def forward(self, emb, feat):
         if feat.dim() == 2:
-            feat = feat.unsqueeze(1)
+            feat = feat.unsqueeze(1).expand(-1, emb.size(1), -1)  # Expand feat to match emb dimensions
         
         q = rearrange(self.to_q(feat), 'b n (h d) -> b h n d', h=self.heads)
         k = rearrange(self.to_k(emb), 'b n (h d) -> b h n d', h=self.heads)
@@ -76,7 +77,7 @@ class CrossAttentionBlock(nn.Module):
 
 class AttentionFilter(BaseFilter):
     name = 'attention'
-    def __init__(self, feat_dim=192, emb_dim=384, n_head=4, drop_prob=0.1):
+    def __init__(self, feat_dim=192, emb_dim=384, seq_len=1500, n_head=4, drop_prob=0.1):
         super().__init__()
 
         self.dropout0 = nn.Dropout(p=drop_prob)
@@ -88,6 +89,9 @@ class AttentionFilter(BaseFilter):
             CrossAttentionBlock(feat_dim, emb_dim, n_head, drop_prob),
             CrossAttentionBlock(feat_dim, emb_dim, n_head, drop_prob)
         ])
+
+        self.register_buffer("positional_embedding", sinusoids(seq_len, emb_dim))
+
         
     def _init_weights_gaus(self, m):
         """
@@ -104,8 +108,8 @@ class AttentionFilter(BaseFilter):
         Forward pass with optional block selection.
         
         Args:
-            emb (Tensor): The embedding tensor.
-            feat (Tensor): Feature tensor.
+            emb (Tensor): The embedding tensor. (N, seq_len, emb_dim)
+            feat (Tensor): Feature tensor. (N, seq_len, emb_dim)
             idx (int, optional): Block index to run. Defaults to -1, which runs all blocks.
 
         Returns:
@@ -114,16 +118,11 @@ class AttentionFilter(BaseFilter):
         _emb  = emb
 
         # Add positional encoding to the embedding
-        pe = posemb_sincos_1d(emb)
-        emb = rearrange(emb, 'b ... d -> b (...) d') + pe
-        
-        # Process either one block specified by idx or all blocks
+        emb = (emb + self.positional_embedding).to(emb.dtype)        
         if idx == -1:
             for block in self.blocks:
                 # Add positional encoding to the embedding
                 emb = block(emb, feat)
-                pe = posemb_sincos_1d(emb)
-                emb = rearrange(emb, 'b ... d -> b (...) d') + pe
         else:
             emb = self.blocks[idx](emb, feat)
 

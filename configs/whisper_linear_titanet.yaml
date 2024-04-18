@@ -1,6 +1,6 @@
 trainer:
   optimizer:
-    lr: 0.0000005
+    lr: 0.000001
     weight_decay: 0.0001
 
 defaults:

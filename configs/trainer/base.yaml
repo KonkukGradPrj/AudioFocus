@@ -2,16 +2,16 @@
 seed: ${seed}
 
 # performance optimization
-use_amp: True
+use_amp: false
 
 ################
 # train
-epochs: 10
+epochs: 50
 clip_grad_norm: 0.5
 
 loss: 'l2'
 filter_every: false
-eps: 0.2
+eps: 0.6
 
 optimizer_type: 'adamw'
 optimizer:
