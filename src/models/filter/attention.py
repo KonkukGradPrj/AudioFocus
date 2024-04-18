@@ -47,6 +47,7 @@ class CrossAttentionBlock(nn.Module):
         self.cross_attention = CrossAttention(feat_dim, emb_dim, heads=n_head, dim_head=emb_dim // n_head)
         self.ffn = nn.Sequential(nn.Linear(emb_dim, emb_dim), nn.ReLU(),
                                  nn.Linear(emb_dim, emb_dim), nn.ReLU(), nn.Dropout(p=drop_prob))
+        
     def forward(self, emb, feat):
         _emb = emb
         emb = self.cross_attention(emb, feat)
@@ -105,7 +106,7 @@ class AttentionFilter(BaseFilter):
         _emb  = emb
 
         # Add positional encoding to the embedding
-        emb = (emb + self.positional_embedding).to(emb.dtype)        
+        # emb = (emb + self.positional_embedding).to(emb.dtype)        
         if idx == -1:
             for block in self.blocks:
                 emb = block(emb, feat)
