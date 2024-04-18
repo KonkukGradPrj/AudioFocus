@@ -8,19 +8,6 @@ from whisper.model import sinusoids
 from src.models.filter.base import BaseFilter
 
 
-# helpers
-def posemb_sincos_1d(patches, temperature=10000, dtype=torch.float32):
-    _, n, dim, device, dtype = *patches.shape, patches.device, patches.dtype
-
-    assert (dim % 2) == 0, 'feature dimension must be a multiple of 2 for sincos emb'
-    omega = torch.arange(dim // 2, device=device) / (dim // 2 - 1)
-    omega = 1. / (temperature ** omega)
-
-    n = torch.arange(n, device=device).flatten()[:, None] * omega[None, :]
-    pe = torch.cat((n.sin(), n.cos()), dim=1)
-    return pe.type(dtype)
-
-
 class CrossAttention(nn.Module):
     def __init__(self, feat_dim=192, emb_dim=384, heads=4, dim_head=96):
         super().__init__()
@@ -121,9 +108,10 @@ class AttentionFilter(BaseFilter):
         emb = (emb + self.positional_embedding).to(emb.dtype)        
         if idx == -1:
             for block in self.blocks:
-                # Add positional encoding to the embedding
                 emb = block(emb, feat)
         else:
             emb = self.blocks[idx](emb, feat)
-
-        return emb + _emb
+        
+        # residual conn
+        emb = emb + _emb
+        return emb
