@@ -94,7 +94,7 @@ class AttentionFilter(BaseFilter):
         Initialize weights and biases uniformly in the range [-1e-4, 1e-4].
         """
         if isinstance(m, nn.Linear):
-            nn.init.normal_(m.weight, mean=0.0, std=0.001)
+            nn.init.normal_(m.weight, mean=0.0, std=0.0001)
             if m.bias is not None:
                 nn.init.constant_(m.bias, 0)
 
@@ -111,15 +111,20 @@ class AttentionFilter(BaseFilter):
         Returns:
             Tensor: The output tensor after processing.
         """
+        _emb  = emb
+
         # Add positional encoding to the embedding
         pe = posemb_sincos_1d(emb)
         emb = rearrange(emb, 'b ... d -> b (...) d') + pe
-
+        
         # Process either one block specified by idx or all blocks
         if idx == -1:
             for block in self.blocks:
+                # Add positional encoding to the embedding
                 emb = block(emb, feat)
+                pe = posemb_sincos_1d(emb)
+                emb = rearrange(emb, 'b ... d -> b (...) d') + pe
         else:
             emb = self.blocks[idx](emb, feat)
 
-        return emb
+        return emb + _emb

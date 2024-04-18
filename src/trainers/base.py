@@ -89,8 +89,13 @@ class BaseTrainer():
 
                 loss = 0
                 if cfg.filter_every:
-                    for predict, target in zip(predict_emb_list, target_emb_list):                    
-                        loss += self.loss_fn(predict, target)
+                    for idx, (predict, target) in enumerate(zip(predict_emb_list, target_emb_list)):                    
+                        layer_loss = self.loss_fn(predict, target)
+                        train_logs[f'loss_{idx}'] = layer_loss
+                        loss += layer_loss
+                        # train from the layers in the front.
+                        if layer_loss > cfg.eps:
+                            break
                 else:
                     loss = self.loss_fn(predict, target)
                 
