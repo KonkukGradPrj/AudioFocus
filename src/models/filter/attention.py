@@ -9,7 +9,7 @@ from src.models.filter.base import BaseFilter
 
 
 class CrossAttention(nn.Module):
-    def __init__(self, feat_dim=192, emb_dim=384, heads=4, dim_head=96):
+    def __init__(self, feat_dim=192, emb_dim=384, heads=6, dim_head=96):
         super().__init__()
         self.heads = heads
         self.scale = dim_head ** -0.5
@@ -49,23 +49,21 @@ class CrossAttentionBlock(nn.Module):
                                  nn.Linear(emb_dim, emb_dim), nn.ReLU(), nn.Dropout(p=drop_prob))
         
     def forward(self, emb, feat):
-        _emb = emb
         emb = self.cross_attention(emb, feat)
 
         emb = self.dropout1(emb)
-        emb = self.norm1(emb + _emb)
+        emb = self.norm1(emb)
 
-        _emb = emb
         emb = self.ffn(emb)
       
         emb = self.dropout2(emb)
-        emb = self.norm2(emb + _emb)
+        emb = self.norm2(emb)
         return emb
 
 
 class AttentionFilter(BaseFilter):
     name = 'attention'
-    def __init__(self, feat_dim=192, emb_dim=384, seq_len=1500, n_head=4, drop_prob=0.1):
+    def __init__(self, feat_dim=192, emb_dim=384, seq_len=1500, n_head=6, drop_prob=0.1):
         super().__init__()
 
         self.dropout0 = nn.Dropout(p=drop_prob)
@@ -86,7 +84,7 @@ class AttentionFilter(BaseFilter):
         Initialize weights and biases uniformly in the range [-1e-4, 1e-4].
         """
         if isinstance(m, nn.Linear):
-            nn.init.normal_(m.weight, mean=0.0, std=0.0001)
+            nn.init.uniform_(m.weight, mean=0.0, std=0.03)
             if m.bias is not None:
                 nn.init.constant_(m.bias, 0)
 
