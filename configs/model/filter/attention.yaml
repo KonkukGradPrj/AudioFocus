@@ -1,5 +1,7 @@
 type: attention
 feat_dim: 192
 emb_dim: 384
-n_head: 6
+seq_len: 1500
+n_head: 3
+alpha: 4
 drop_prob: 0.1
