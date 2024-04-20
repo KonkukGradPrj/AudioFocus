@@ -94,7 +94,7 @@ class BaseTrainer():
                         train_logs[f'loss_{idx}'] = layer_loss
                         loss += layer_loss
                         # train from the layers in the front.
-                        if loss > cfg.eps:
+                        if layer_loss > cfg.eps:
                             break
                 else:
                     loss = self.loss_fn(predict, target)

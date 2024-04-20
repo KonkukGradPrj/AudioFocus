@@ -1,7 +1,7 @@
 type: 'Libri2Mix'
 
 train_dataloader:
-  batch_size: 16
+  batch_size: 8
   num_workers: 4
   pin_memory: true
 

@@ -18,26 +18,34 @@ class CrossAttention(nn.Module):
         self.to_q = nn.Linear(feat_dim, heads * dim_head  // alpha, bias=False)
         self.to_k = nn.Linear(emb_dim, heads * dim_head  // alpha, bias=False)
         self.to_v = nn.Linear(emb_dim, heads * dim_head  // alpha, bias=False)
-        self.to_out = nn.Linear(heads * dim_head  // alpha, emb_dim // alpha)
-        self.apply(self._init_weights_norm)
+        self.to_out = nn.Linear(heads * dim_head  // alpha, emb_dim // alpha, bias=False)
+
+        self.scales = nn.Parameter(torch.randn(seq_len, 1) * 0.01 + 1.0)  # Initialize scale close to 1 with small random noise
+        self.biases = nn.Parameter(torch.zeros(seq_len, 1))  # Initialize bias to 0
+
+        self._init_weights_uniform(self.to_v)
+        self._init_weights_uniform(self.to_out)
 
         self.register_buffer("positional_embedding", sinusoids(seq_len, feat_dim))
 
         
-    def _init_weights_norm(self, m):
+    def _init_weights_uniform(self, m):
         """
         Initialize weights and biases normal distribution in the range with 1e-4 std.
         """
         if isinstance(m, nn.Linear):
-            nn.init.normal_(m.weight, mean=0.0, std=0.01)
+            # nn.init.normal_(m.weight, mean=0.0, std=0.0001)
+            nn.init.uniform_(m.weight, a=-0.001, b=0.001)
             if m.bias is not None:
                 nn.init.constant_(m.bias, 0)
                 
     def forward(self, emb, feat):
         # Expand feat to match emb dimensions
         if feat.dim() == 2:
-            feat = feat.unsqueeze(1).expand(-1, emb.size(1), -1) 
-            feat =(feat + self.positional_embedding).to(feat.dtype)        
+            # feat = feat.unsqueeze(1).expand(-1, emb.size(1), -1)    # batch emb => batch seq_len emb
+            # feat =(feat + self.positional_embedding).to(feat.dtype)  
+            feat = feat.unsqueeze(1) * self.scales + self.biases  # Apply learnable scale and bias
+            feat = feat.expand(-1, emb.size(1), -1)  # Match sequence length of emb      
         
         q = rearrange(self.to_q(feat), 'b n (h d) -> b h n d', h=self.heads)
         k = rearrange(self.to_k(emb), 'b n (h d) -> b h n d', h=self.heads)
@@ -62,8 +70,8 @@ class CrossAttentionBlock(nn.Module):
         self.norm2 = nn.LayerNorm(emb_dim)
         
         self.cross_attention = CrossAttention(feat_dim, emb_dim, seq_len=seq_len, heads=n_head, alpha=alpha, dim_head=emb_dim // n_head)
-        self.ffn = nn.Sequential(nn.Linear(emb_dim // alpha, emb_dim // alpha), nn.ReLU(),
-                                 nn.Linear(emb_dim // alpha, emb_dim), nn.ReLU(), nn.Dropout(p=drop_prob))
+        self.ffn = nn.Sequential(nn.Linear(emb_dim // alpha, emb_dim // alpha, bias=False), nn.ReLU(),
+                                 nn.Linear(emb_dim // alpha, emb_dim, bias=False), nn.ReLU(), nn.Dropout(p=drop_prob))
         
     def forward(self, emb, feat):
         emb = self.cross_attention(emb, feat)
@@ -92,9 +100,6 @@ class AttentionFilter(BaseFilter):
             CrossAttentionBlock(feat_dim, emb_dim, seq_len, n_head, alpha, drop_prob),
             CrossAttentionBlock(feat_dim, emb_dim, seq_len, n_head, alpha, drop_prob),
         ])
-
-
-
 
     def forward(self, emb, feat, idx=-1):
         """
