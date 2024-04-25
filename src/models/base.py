@@ -10,23 +10,6 @@ class Model(nn.Module):
         self.filter = filter
         self.speaker_model = speaker_model
     
-    @torch.no_grad()
-    def transcribe(self, input_voice, target_voice=None, filter_every=False):
-        """
-        input: 
-            mixed_voice: input voice. mixed voce if target voice is not none else target voice.
-            target_voice: sample voice of target voice
-
-        output: 
-            text
-        """
-        emb, _ = self.forward(input_voice, target_voice, filter_every)
-        transcriptions = []
-        for trans in self.asr_model.transcribe(emb):
-            transcriptions.append(trans.upper().lstrip())
-            
-        return transcriptions
-    
 
     def forward(self, input_voice, target_voice=None, filter_every=False):
         """
@@ -62,3 +45,21 @@ class Model(nn.Module):
                 emb = self.asr_model.encode(emb)
 
         return emb, mid_layer_embeddings
+    
+        
+    @torch.no_grad()
+    def transcribe(self, input_voice, target_voice=None, filter_every=False):
+        """
+        input: 
+            mixed_voice: input voice. mixed voce if target voice is not none else target voice.
+            target_voice: sample voice of target voice
+
+        output: 
+            text
+        """
+        emb, _ = self.forward(input_voice, target_voice, filter_every)
+        transcriptions = []
+        for trans in self.asr_model.transcribe(emb):
+            transcriptions.append(trans.upper().lstrip())
+            
+        return transcriptions

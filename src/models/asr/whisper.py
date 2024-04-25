@@ -31,18 +31,15 @@ class Whisper(DecodingTask, BaseASR):
         # Disable gradient calculations
         self.asr_decoder.requires_grad_(False)
         
-        self.asr_encoder.mid_layer_outputs = []
-    
     def encode(self, emb, idx=-1):
         if idx == -1:
-            emb = self.asr_encoder(emb)
+            return self.asr_encoder(emb)
         else:
             if idx == 0:
                 emb = self.asr_encoder.conv1(emb)  
                 emb = self.asr_encoder.conv2(emb)  
                 emb = emb.permute(0, 2, 1)
-            emb = self.asr_encoder.blocks[idx](emb)
-        return emb
+            return self.asr_encoder.blocks[idx](emb)
     
     def transcribe(self, emb):
         """

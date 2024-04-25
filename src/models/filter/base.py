@@ -15,4 +15,11 @@ class BaseFilter(nn.Module):
     def forward(self, emb, feat):
         return emb
     
-    
+    def _init_weights(self, m):
+        """
+        Initialize weights and biases in zeros.
+        """
+        if isinstance(m, nn.Linear):
+            nn.init.zeros_(m.weight)
+            if m.bias is not None:
+                nn.init.zeros_(m.bias)

@@ -23,22 +23,21 @@ class CrossAttention(nn.Module):
         self.scales = nn.Parameter(torch.randn(seq_len, 1) * 0.01 + 1.0)  # Initialize scale close to 1 with small random noise
         self.biases = nn.Parameter(torch.zeros(seq_len, 1))  # Initialize bias to 0
 
-        self._init_weights_uniform(self.to_v)
-        self._init_weights_uniform(self.to_out)
+        self._init_weights(self.to_v)
+        self._init_weights(self.to_out)
 
         self.register_buffer("positional_embedding", sinusoids(seq_len, feat_dim))
 
-        
-    def _init_weights_uniform(self, m):
+
+    def _init_weights(self, m):
         """
-        Initialize weights and biases normal distribution in the range with 1e-4 std.
+        Initialize weights and biases in zeros.
         """
         if isinstance(m, nn.Linear):
-            # nn.init.normal_(m.weight, mean=0.0, std=0.0001)
-            nn.init.uniform_(m.weight, a=-0.001, b=0.001)
+            nn.init.zeros_(m.weight)
             if m.bias is not None:
-                nn.init.constant_(m.bias, 0)
-                
+                nn.init.zeros_(m.bias)
+
     def forward(self, emb, feat):
         # Expand feat to match emb dimensions
         if feat.dim() == 2:
