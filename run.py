@@ -53,12 +53,13 @@ def run(args):
     trainer.train()
     
     wandb.finish()
+    torch.save(model.state_dict(), f"./data/weights/{args.overrides[0]}_{args.overrides[1]}.pth")
 
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument('--config_path', type=str,    default='./configs')
-    parser.add_argument('--config_name', type=str,    default='whisper_attention_titanet') 
+    parser.add_argument('--config_name', type=str,    default='whisper_linear_titanet') 
     parser.add_argument('--overrides',   action='append', default=[])
     args = parser.parse_args()
 
