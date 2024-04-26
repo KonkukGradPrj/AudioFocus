@@ -32,14 +32,26 @@ class Whisper(DecodingTask, BaseASR):
         self.asr_decoder.requires_grad_(False)
         
     def encode(self, emb, idx=-1):
+        """
+        emb : torch.Tensor, shape = (batch_size, n_mels, n_ctx)
+            the mel spectrogram of the audio
+        idx : block to encode. if idx == -1 forward whole network.
+        """
         if idx == -1:
             return self.asr_encoder(emb)
-        else:
-            if idx == 0:
-                emb = self.asr_encoder.conv1(emb)  
-                emb = self.asr_encoder.conv2(emb)  
-                emb = emb.permute(0, 2, 1)
-            return self.asr_encoder.blocks[idx](emb)
+
+        if idx == 0:
+            emb = F.gelu(self.asr_encoder.conv1(emb))
+            emb = F.gelu(self.asr_encoder.conv2(emb))
+            emb = emb.permute(0, 2, 1)
+            emb = (emb + self.asr_encoder.positional_embedding).to(emb.dtype)
+            
+        emb = self.asr_encoder.blocks[idx](emb)
+        if idx == 3:
+            emb = self.asr_encoder.ln_post(emb)
+
+        return emb
+    
     
     def transcribe(self, emb):
         """

@@ -46,6 +46,7 @@ class Model(nn.Module):
                 filter_emb = self.filter(emb, feat)
                 init_emb = self.init_filter(emb, feat)
                 emb = emb + filter_emb - init_emb
+        
         else:
             if filter_every:
                 for idx in range(4): # constant. fix asr model into whisper en.tiny
