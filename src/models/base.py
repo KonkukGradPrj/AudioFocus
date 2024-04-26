@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 import whisper
+from copy import deepcopy
+
 
 class Model(nn.Module):
     def __init__(self, asr_model, filter, speaker_model):
@@ -9,6 +11,10 @@ class Model(nn.Module):
         self.asr_model = asr_model
         self.filter = filter
         self.speaker_model = speaker_model
+        
+        self.init_filter = deepcopy(self.filter)
+        for param in self.init_filter.parameters():
+            param.requires_grad = False
     
 
     def forward(self, input_voice, target_voice=None, filter_every=False):
@@ -31,11 +37,15 @@ class Model(nn.Module):
             if filter_every:
                 for idx in range(4): # constant. fix asr model into whisper en.tiny
                     emb = self.asr_model.encode(emb, idx)
-                    emb = self.filter(emb, feat, idx)
+                    filter_emb = self.filter(emb, feat, idx)
+                    init_emb = self.init_filter(emb, feat, idx)
+                    emb = emb + filter_emb - init_emb
                     mid_layer_embeddings.append(emb)
             else:
                 emb = self.asr_model.encode(emb)
-                emb = self.filter(emb, feat)
+                filter_emb = self.filter(emb, feat)
+                init_emb = self.init_filter(emb, feat)
+                emb = emb + filter_emb - init_emb
         else:
             if filter_every:
                 for idx in range(4): # constant. fix asr model into whisper en.tiny

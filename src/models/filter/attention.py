@@ -23,20 +23,8 @@ class CrossAttention(nn.Module):
         self.scales = nn.Parameter(torch.randn(seq_len, 1) * 0.01 + 1.0)  # Initialize scale close to 1 with small random noise
         self.biases = nn.Parameter(torch.zeros(seq_len, 1))  # Initialize bias to 0
 
-        self._init_weights(self.to_v)
-        self._init_weights(self.to_out)
-
         self.register_buffer("positional_embedding", sinusoids(seq_len, feat_dim))
 
-
-    def _init_weights(self, m):
-        """
-        Initialize weights and biases in zeros.
-        """
-        if isinstance(m, nn.Linear):
-            nn.init.zeros_(m.weight)
-            if m.bias is not None:
-                nn.init.zeros_(m.bias)
 
     def forward(self, emb, feat):
         # Expand feat to match emb dimensions
@@ -112,7 +100,6 @@ class AttentionFilter(BaseFilter):
         Returns:
             Tensor: The output tensor after processing.
         """
-        _emb  = emb
 
         # Add positional encoding to the embedding
         # emb = (emb + self.positional_embedding).to(emb.dtype)        
@@ -122,6 +109,4 @@ class AttentionFilter(BaseFilter):
         else:
             emb = self.blocks[idx](emb, feat)
         
-        # residual conn
-        emb = emb + _emb
         return emb

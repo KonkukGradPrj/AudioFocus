@@ -11,11 +11,3 @@ for loss in "${loss_fn[@]}"; do
         --overrides seed=1
 done
 
-for loss in "${loss_fn[@]}"; do
-    python run.py \
-        --overrides group_name=attention_titanet_filter_every_0419 \
-        --overrides exp_name=filter_every_ablation \
-        --overrides trainer.loss=${loss}\
-        --overrides trainer.filter_every=true \
-        --overrides seed=1
-done

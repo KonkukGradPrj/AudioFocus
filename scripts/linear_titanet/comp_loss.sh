@@ -4,6 +4,7 @@ loss_fn=(all l2 l1)
 # best l2, lr 1e-6
 for loss in "${loss_fn[@]}"; do
     python run.py \
+        --config_name whisper_linear_titanet\
         --overrides group_name=tune_reslinear_titanet_0425 \
         --overrides exp_name=comp_loss_${loss} \
         --overrides trainer.loss=${loss}\
