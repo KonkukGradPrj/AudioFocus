@@ -29,14 +29,13 @@ class CrossAttention(nn.Module):
     def forward(self, emb, feat):
         # Expand feat to match emb dimensions
         if feat.dim() == 2:
-            feat = feat.unsqueeze(1).expand(-1, emb.size(1), -1)    # batch emb => batch seq_len emb
-            
+            feat = feat.unsqueeze(1) * self.scales + self.biases  # Apply learnable scale and bias
+            feat = feat.expand(-1, emb.size(1), -1)  # Match sequence length of emb      
         
         q = rearrange(self.to_q(feat), 'b n (h d) -> b h d n', h=self.heads)
         k = rearrange(self.to_k(emb), 'b n (h d) -> b h d n', h=self.heads)
         v = rearrange(self.to_v(emb), 'b n (h d) -> b h d n', h=self.heads)
         
-        ipdb.set_trace()
         dots = torch.matmul(q, k.transpose(-2, -1)) * self.scale # b, h, n, d
 
         attn = F.softmax(dots, dim=-1)
