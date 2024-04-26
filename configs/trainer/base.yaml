@@ -11,7 +11,7 @@ clip_grad_norm: 0.5
 
 loss: 'l2'
 filter_every: false
-eps: 0.2
+eps: 0.45
 
 optimizer_type: 'adamw'
 optimizer:
@@ -20,7 +20,7 @@ optimizer:
   betas: [0.9, 0.999]
   eps: 0.00000001
 
-scheduler:
+scheduler:  
   first_cycle_steps: null
   cycle_mult: 1.0
   max_lr: ${trainer.optimizer.lr}

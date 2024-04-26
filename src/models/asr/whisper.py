@@ -31,6 +31,7 @@ class Whisper(DecodingTask, BaseASR):
         # Disable gradient calculations
         self.asr_decoder.requires_grad_(False)
         
+        
     def encode(self, emb, idx=-1):
         """
         emb : torch.Tensor, shape = (batch_size, n_mels, n_ctx)

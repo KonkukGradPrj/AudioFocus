@@ -16,7 +16,7 @@ from src.common.train_utils import L1MSELoss
 class BaseTrainer():
     def __init__(self,
                  cfg,
-                 device,
+                 device,    
                  train_loader,
                  test_loader,
                  logger,
@@ -54,6 +54,8 @@ class BaseTrainer():
     def _build_optimizer(self, optimizer_type, optimizer_cfg):
         if optimizer_type == 'adamw':
             return optim.AdamW(self.model.filter.parameters(), **optimizer_cfg)
+        elif optimizer_type == 'sgd':
+            return optim.SGD(self.model.filter.parameters(), lr=optimizer_cfg['lr'], weight_decay=optimizer_cfg['weight_decay'])
         else:
             raise ValueError
 
@@ -71,13 +73,12 @@ class BaseTrainer():
         test_logs['epoch'] = self.epoch
         
         self.model.eval()
-        test_logs.update(self.test())
+        # test_logs.update(self.test())
 
         self.logger.update_log(**test_logs)
         self.logger.log_to_wandb(self.step)
-
         
-        for _ in range(int(num_epochs)):                
+        for epoch in range(int(num_epochs)):                
             # train        
             self.model.train()
             for mixed_voices, clean_voices, _, target_voices in tqdm.tqdm(self.train_loader):   
@@ -94,7 +95,7 @@ class BaseTrainer():
                         train_logs[f'loss_{idx}'] = layer_loss
                         loss += layer_loss
                         # train from the layers in the front.
-                        if layer_loss > cfg.eps:
+                        if  layer_loss > cfg.eps and num_epochs * (idx + 1) / 4  > epoch:
                             break
                 else:
                     loss = self.loss_fn(predict, target)

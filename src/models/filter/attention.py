@@ -10,7 +10,7 @@ from src.models.filter.base import BaseFilter
 
 
 class CrossAttention(nn.Module):
-    def __init__(self, feat_dim=192, emb_dim=384, seq_len=1500, heads=6, alpha=4, dim_head=96):
+    def __init__(self, feat_dim=192, emb_dim=384, seq_len=1500, heads=3, alpha=4, dim_head=96):
         super().__init__()
         self.heads = heads
         self.scale = dim_head ** -0.5
