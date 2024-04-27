@@ -134,4 +134,4 @@ class TriSRLoss(nn.Module):
         neg_distance = torch.norm(norm_predictions - norm_old_predictions, p=2, dim=1)\
         
         tri_loss = pos_distance - self.beta * neg_distance
-        return tri_loss
+        return tri_loss.mean()
