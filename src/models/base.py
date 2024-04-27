@@ -30,7 +30,7 @@ class Model(nn.Module):
         emb = [whisper.log_mel_spectrogram(whisper.pad_or_trim(iv.flatten())) for iv in input_voice]
         emb = torch.stack(emb).squeeze().to(input_voice[0].device)
         
-        old_emb = emb
+      
         mid_layer_embeddings = []
         old_mid_layer_embeddings = []
 
@@ -39,16 +39,23 @@ class Model(nn.Module):
             if filter_every:
                 for idx in range(4): # constant. fix asr model into whisper en.tiny
                     emb = self.asr_model.encode(emb, idx)
+                    res_emb = emb
+
                     filter_emb = self.filter(emb, feat, idx)
                     init_emb = self.init_filter(emb, feat, idx)
-                    emb = emb + filter_emb - init_emb
+                    emb = res_emb + filter_emb - init_emb
+                    
                     mid_layer_embeddings.append(emb)
+                    old_mid_layer_embeddings.append(res_emb)
             else:
                 emb = self.asr_model.encode(emb)
+                res_emb = emb
+
                 filter_emb = self.filter(emb, feat)
                 init_emb = self.init_filter(emb, feat)
-                emb = emb + filter_emb - init_emb
-        
+                
+                emb = res_emb + filter_emb - init_emb
+            old_emb = res_emb
         else:
             if filter_every:
                 for idx in range(4): # constant. fix asr model into whisper en.tiny
@@ -56,6 +63,7 @@ class Model(nn.Module):
                     mid_layer_embeddings.append(emb)
             else:
                 emb = self.asr_model.encode(emb)
+            old_emb = emb
 
         return emb, mid_layer_embeddings, old_emb, old_mid_layer_embeddings
     

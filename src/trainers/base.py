@@ -173,7 +173,7 @@ class BaseTrainer():
                 predict_emb, old_predict_emb, predict_text = self.model.transcribe(mixed_voices, target_voices, self.cfg.filter_every)
                 test_wer += self.wer.compute(references=target_text, predictions=predict_text) * n
                 
-                oracle_emb, oracle_text = self.vanilla.transcribe(clean_voices)
+                oracle_emb, _, oracle_text = self.vanilla.transcribe(clean_voices)
                 if self.cfg.loss =='tri':
                     test_loss = self.loss_fn(predict_emb, old_predict_emb, oracle_emb)
                 else:
