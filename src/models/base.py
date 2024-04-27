@@ -30,7 +30,9 @@ class Model(nn.Module):
         emb = [whisper.log_mel_spectrogram(whisper.pad_or_trim(iv.flatten())) for iv in input_voice]
         emb = torch.stack(emb).squeeze().to(input_voice[0].device)
         
+        old_emb = emb
         mid_layer_embeddings = []
+        old_mid_layer_embeddings = []
 
         if target_voice is not None: # filtering using target voice
             feat = self.speaker_model.extract_feature(target_voice)        
@@ -55,7 +57,7 @@ class Model(nn.Module):
             else:
                 emb = self.asr_model.encode(emb)
 
-        return emb, mid_layer_embeddings
+        return emb, mid_layer_embeddings, old_emb, old_mid_layer_embeddings
     
         
     @torch.no_grad()
@@ -68,9 +70,9 @@ class Model(nn.Module):
         output: 
             text
         """
-        emb, _ = self.forward(input_voice, target_voice, filter_every)
+        emb, _, old_emb, _ = self.forward(input_voice, target_voice, filter_every)
         transcriptions = []
         for trans in self.asr_model.transcribe(emb):
             transcriptions.append(trans.upper().lstrip())
             
-        return transcriptions
+        return emb, old_emb, transcriptions

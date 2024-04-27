@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from collections import deque
 from evaluate import load
 from src.common.schedulers import CosineAnnealingWarmupRestarts
-from src.common.train_utils import L1MSELoss
+from src.common.train_utils import L1MSELoss, SNRLoss, TriSRLoss
 
 
 class BaseTrainer():
@@ -48,6 +48,10 @@ class BaseTrainer():
             self.loss_fn = nn.MSELoss()                    
         elif cfg.loss == 'l1':
             self.loss_fn = nn.L1Loss()
+        elif cfg.loss == 'snr':
+            self.loss_fn = SNRLoss()
+        elif cfg.loss == 'tri':
+            self.loss_fn = TriSRLoss()
         else:
             self.loss_fn = L1MSELoss()
 
@@ -73,7 +77,7 @@ class BaseTrainer():
         test_logs['epoch'] = self.epoch
         
         self.model.eval()
-        # test_logs.update(self.test())
+        test_logs.update(self.test())
 
         self.logger.update_log(**test_logs)
         self.logger.log_to_wandb(self.step)
@@ -84,21 +88,28 @@ class BaseTrainer():
             for mixed_voices, clean_voices, _, target_voices in tqdm.tqdm(self.train_loader):   
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 with torch.no_grad():
-                    target, target_emb_list = self.vanilla(clean_voices, filter_every = cfg.filter_every)
-                predict, predict_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
+                    target, target_emb_list, _, _ = self.vanilla(clean_voices, filter_every = cfg.filter_every)
+                predict, predict_emb_list, old_predict, old_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
                 train_logs = {}             
 
                 loss = 0
-                if cfg.filter_every:
-                    for idx, (predict, target) in enumerate(zip(predict_emb_list, target_emb_list)):                    
-                        layer_loss = self.loss_fn(predict, target)
-                        train_logs[f'loss_{idx}'] = layer_loss
-                        loss += layer_loss
-                        # train from the layers in the front.
-                        if  layer_loss > cfg.eps and num_epochs * (idx + 1) / 4  > epoch:
-                            break
+                if cfg.loss == 'tri':
+                    if cfg.filter_every:
+                        for idx, (old, predict, target) in enumerate(zip(predict_emb_list, target_emb_list, old_emb_list)):                    
+                            layer_loss = self.loss_fn(predict, old, target)
+                            train_logs[f'loss_{idx}'] = layer_loss
+                            loss += layer_loss
+                    else:
+                        loss = self.loss_fn(predict, old_predict, target)
+
                 else:
-                    loss = self.loss_fn(predict, target)
+                    if cfg.filter_every:
+                        for idx, (predict, target) in enumerate(zip(predict_emb_list, target_emb_list)):                    
+                            layer_loss = self.loss_fn(predict, target)
+                            train_logs[f'loss_{idx}'] = layer_loss
+                            loss += layer_loss
+                    else:
+                        loss = self.loss_fn(predict, target)
                 
                 scaler.scale(loss).backward()
                 
@@ -149,31 +160,50 @@ class BaseTrainer():
             self.logger.log_to_wandb(self.step)
 
     def test(self):
-        wer = 0.0
+        test_wer = 0.0
         base_wer = 0.0
-        
+        oracle_wer = 0.0
+
         N = 0
         for mixed_voices, clean_voices, target_text, target_voices in tqdm.tqdm(self.test_loader):
             with torch.no_grad():     
                 n = len(target_text)
 
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-                predict_text = self.model.transcribe(mixed_voices, target_voices, self.cfg.filter_every)
-                wer += self.wer.compute(references=target_text, predictions=predict_text) * n
+                predict_emb, old_predict_emb, predict_text = self.model.transcribe(mixed_voices, target_voices, self.cfg.filter_every)
+                test_wer += self.wer.compute(references=target_text, predictions=predict_text) * n
                 
+                oracle_emb, oracle_text = self.vanilla.transcribe(clean_voices)
+                if self.cfg.loss =='tri':
+                    test_loss = self.loss_fn(predict_emb, old_predict_emb, oracle_emb)
+                else:
+                    test_loss = self.loss_fn(predict_emb, oracle_emb)
+
+                N += n
+
                 # calculate baseline in the first time.
                 if self.base_wer is None:
-                    baseline_text = self.vanilla.transcribe(mixed_voices)
+                    baseline_emb, _, baseline_text = self.vanilla.transcribe(mixed_voices)
                     base_wer += self.wer.compute(references=target_text, predictions=baseline_text) * n
+                    oracle_wer += self.wer.compute(references=target_text, predictions=oracle_text) * n
+
+                    self.baseline_text = baseline_text[0]
+                    if self.cfg.loss == 'tri':
+                        self.base_loss = self.loss_fn(baseline_emb, baseline_emb, oracle_emb)
+                    else:
+                        self.base_loss = self.loss_fn(baseline_emb, oracle_emb)
                 
-                N += n
-                
-        wer /= N
+        test_wer /= N
         if self.base_wer is None:
             self.base_wer = base_wer / N
-            self.baseline_text = baseline_text[0]
+            self.oracle_wer = oracle_wer / N
 
-        test_logs = {'test_wer': wer, 'base_wer': self.base_wer}
+        test_logs = {'test_wer': test_wer,
+                     'test_loss': test_loss.item(),
+                     'base_wer': self.base_wer, 
+                     'base_loss': self.base_loss.item(),
+                     'oracle_wer': self.oracle_wer}
+        
         print(test_logs)
         print('target:', target_text[0])
         print('vanilla:', self.baseline_text)

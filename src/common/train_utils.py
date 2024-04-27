@@ -97,3 +97,41 @@ class L1MSELoss(nn.Module):
         loss_l1 = self.l1_loss(predictions, targets)
         loss_mse = self.mse_loss(predictions, targets)
         return self.alpha * loss_l1 + (1 - self.alpha) * loss_mse
+    
+
+class SNRLoss(nn.Module):
+    def __init__(self):
+        super(SNRLoss, self).__init__()
+
+    def forward(self, predictions, targets):
+        # Ensure the input tensors are of floating point type
+        targets = targets.float()
+        predictions = predictions.float()
+
+        # Calculate the signal power
+        signal_power = torch.norm(targets, p=2)**2
+
+        # Calculate the error power
+        error_power = torch.norm(targets - predictions, p=2)**2
+
+        # Compute the SNR loss
+        snr_loss = 10 * torch.log10(signal_power / error_power)
+
+        return snr_loss
+    
+# https://arxiv.org/pdf/1911.02411
+class TriSRLoss(nn.Module):
+    def __init__(self, beta=0.3):
+        super(TriSRLoss, self).__init__()
+        self.beta = beta
+
+    def forward(self, predictions, old_predictions, targets):
+        norm_predictions = F.normalize(predictions, p=2, dim=1)
+        norm_old_predictions = F.normalize(old_predictions, p=2, dim=1)
+        norm_targets = F.normalize(targets, p=2, dim=1)
+
+        pos_distance = torch.norm(norm_targets - norm_predictions, p=2, dim=1)
+        neg_distance = torch.norm(norm_predictions - norm_old_predictions, p=2, dim=1)\
+        
+        tri_loss = pos_distance - self.beta * neg_distance
+        return tri_loss
