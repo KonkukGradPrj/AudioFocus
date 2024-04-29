@@ -1,12 +1,12 @@
 #!/bin/bash
 cd ../../
 
-betas=(0.0 -0.3 -0.5 -0.8)
+betas=(0.0 0.3 0.5 0.8 1.0)
 
 for beta in "${betas[@]}"; do
     python run.py \
         --config_name whisper_attention_titanet\
-        --overrides group_name=tune_beta \
+        --overrides group_name=tune_beta_l1_MSE_v2 \
         --overrides exp_name=tune_beta_${beta}\
         --overrides trainer.loss=tri\
         --overrides trainer.epochs=1\
