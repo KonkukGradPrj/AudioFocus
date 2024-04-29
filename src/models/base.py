@@ -71,9 +71,9 @@ class Model(nn.Module):
         output: 
             text
         """
-        emb, _ = self.forward(input_voice, target_voice, filter_every)
+        emb, mid_layer_embeddings = self.forward(input_voice, target_voice, filter_every)
         transcriptions = []
         for trans in self.asr_model.transcribe(emb):
             transcriptions.append(trans.upper().lstrip())
             
-        return emb, transcriptions
+        return emb, mid_layer_embeddings, transcriptions

@@ -84,7 +84,7 @@ class BaseTrainer():
         for _ in range(int(num_epochs)):                
             # train        
             self.model.train()
-            for mixed_voices, clean_voices, _, target_voices in tqdm.tqdm(self.train_loader):   
+            for mixed_voices, clean_voices, utterances, target_voices in tqdm.tqdm(self.train_loader):   
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
                 
                 with torch.no_grad():
@@ -94,13 +94,17 @@ class BaseTrainer():
                 predict, predict_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
                 
                 train_logs = {}             
+                # temp
+                # with torch.no_grad():
+                #     _, _, predict_text = self.model.transcribe(mixed_voices, target_voices, cfg.filter_every)
+                #     train_logs['train/wer'] = self.wer.compute(references=utterances, predictions=predict_text)
                 loss = 0
                 if cfg.loss == 'tri':
                     if cfg.filter_every:
                         for idx, (predict, init, target) in enumerate(zip(predict_emb_list, init_emb_list, target_emb_list)):                    
                             layer_loss, layer_pos_dist, layer_neg_dist = self.loss_fn(predict, init, target)
                             loss += layer_loss
-                            train_logs[f'loss_{idx}'], train_logs[f'pos_dist_{idx}'], train_logs[f'neg_dist_{idx}'] = layer_loss, layer_pos_dist, layer_neg_dist
+                            train_logs[f'train/loss_{idx}'], train_logs[f'train/pos_dist_{idx}'], train_logs[f'train/neg_dist_{idx}'] = layer_loss, layer_pos_dist, layer_neg_dist
                     else:
                         loss, _, _ = self.loss_fn(predict, init_predict, target)
 
@@ -108,7 +112,7 @@ class BaseTrainer():
                     if cfg.filter_every:
                         for idx, (predict, target) in enumerate(zip(predict_emb_list, target_emb_list)):                    
                             layer_loss = self.loss_fn(predict, target)
-                            train_logs[f'loss_{idx}'] = layer_loss
+                            train_logs[f'train/loss_{idx}'] = layer_loss
                             loss += layer_loss
                     else:
                         loss = self.loss_fn(predict, target)
@@ -173,12 +177,12 @@ class BaseTrainer():
                 n = len(target_text)
 
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-                predict_emb, predict_text = self.model.transcribe(mixed_voices, target_voices, self.cfg.filter_every)
+                predict_emb, _, predict_text = self.model.transcribe(mixed_voices, target_voices, self.cfg.filter_every)
 
                 test_wer += self.wer.compute(references=target_text, predictions=predict_text) * n
 
-                baseline_emb, baseline_text = self.vanilla.transcribe(mixed_voices)
-                oracle_emb, oracle_text = self.vanilla.transcribe(clean_voices)
+                baseline_emb, _, baseline_text = self.vanilla.transcribe(mixed_voices)
+                oracle_emb, _, oracle_text = self.vanilla.transcribe(clean_voices)
                 
                 if self.cfg.loss =='tri':
                     test_loss, _, _ = self.loss_fn(predict_emb, baseline_emb, oracle_emb)
@@ -203,11 +207,11 @@ class BaseTrainer():
             self.base_wer = base_wer / N
             self.oracle_wer = oracle_wer / N
 
-        test_logs = {'test_wer': test_wer,
-                     'test_loss': test_loss.item(),
-                     'base_wer': self.base_wer, 
-                     'base_loss': self.base_loss.item(),
-                     'oracle_wer': self.oracle_wer}
+        test_logs = {'test/wer': test_wer,
+                     'test/loss_3': test_loss.item(),
+                     'test/base_wer': self.base_wer, 
+                     'test/base_loss': self.base_loss.item(),
+                     'test/oracle_wer': self.oracle_wer}
         
         print(test_logs)
         print('target:', target_text[0])

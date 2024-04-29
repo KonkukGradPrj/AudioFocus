@@ -119,19 +119,17 @@ class SNRLoss(nn.Module):
 
         return snr_loss
     
-# https://arxiv.org/pdf/1911.02411
+# https://arxiv.org/pdf/1911.02411 => quiet strong to normalized errors see https://wandb.ai/hyeonsio/AudioFocus/runs/9czqhfza   
 class TriSRLoss(nn.Module):
     def __init__(self, beta=0.3):
         super(TriSRLoss, self).__init__()
         self.beta = beta
+        self.l1_loss = nn.L1Loss()
+        self.mse_loss = nn.MSELoss()
 
     def forward(self, predictions, init_predictions, targets):
-        norm_predictions = F.normalize(predictions, p=2, dim=1)
-        norm_init_predictions = F.normalize(init_predictions, p=2, dim=1)
-        norm_targets = F.normalize(targets, p=2, dim=1)
+        pos_distance = self.l1_loss(predictions, targets)
+        neg_distance = self.mse_loss(predictions, init_predictions)
 
-        pos_distance = torch.norm(norm_targets - norm_predictions, p=2, dim=1).mean()
-        neg_distance = torch.norm(norm_predictions - norm_init_predictions, p=2, dim=1).mean()
-
-        tri_loss = pos_distance - self.beta * neg_distance
+        tri_loss = pos_distance + self.beta * neg_distance
         return tri_loss, pos_distance, neg_distance

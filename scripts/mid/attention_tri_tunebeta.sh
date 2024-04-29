@@ -1,7 +1,7 @@
 #!/bin/bash
 cd ../../
 
-betas=(0.0 0.3 0.5 0.8 1.0)
+betas=(0.0 1 2 3)
 
 for beta in "${betas[@]}"; do
     python run.py \
