@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import whisper
 from copy import deepcopy
+import ipdb
 
 
 class Model(nn.Module):
@@ -13,8 +14,6 @@ class Model(nn.Module):
         self.speaker_model = speaker_model
         
         self.init_filter = deepcopy(self.filter)
-        for param in self.init_filter.parameters():
-            param.requires_grad = False
     
 
     def forward(self, input_voice, target_voice=None, filter_every=False):
@@ -30,9 +29,7 @@ class Model(nn.Module):
         emb = [whisper.log_mel_spectrogram(whisper.pad_or_trim(iv.flatten())) for iv in input_voice]
         emb = torch.stack(emb).squeeze().to(input_voice[0].device)
         
-      
         mid_layer_embeddings = []
-        old_mid_layer_embeddings = []
 
         if target_voice is not None: # filtering using target voice
             feat = self.speaker_model.extract_feature(target_voice)        
@@ -46,16 +43,13 @@ class Model(nn.Module):
                     emb = res_emb + filter_emb - init_emb
                     
                     mid_layer_embeddings.append(emb)
-                    old_mid_layer_embeddings.append(res_emb)
             else:
                 emb = self.asr_model.encode(emb)
                 res_emb = emb
 
                 filter_emb = self.filter(emb, feat)
                 init_emb = self.init_filter(emb, feat)
-                
                 emb = res_emb + filter_emb - init_emb
-            old_emb = res_emb
         else:
             if filter_every:
                 for idx in range(4): # constant. fix asr model into whisper en.tiny
@@ -63,9 +57,8 @@ class Model(nn.Module):
                     mid_layer_embeddings.append(emb)
             else:
                 emb = self.asr_model.encode(emb)
-            old_emb = emb
-
-        return emb, mid_layer_embeddings, old_emb, old_mid_layer_embeddings
+        
+        return emb, mid_layer_embeddings
     
         
     @torch.no_grad()
@@ -78,9 +71,9 @@ class Model(nn.Module):
         output: 
             text
         """
-        emb, _, old_emb, _ = self.forward(input_voice, target_voice, filter_every)
+        emb, _ = self.forward(input_voice, target_voice, filter_every)
         transcriptions = []
         for trans in self.asr_model.transcribe(emb):
             transcriptions.append(trans.upper().lstrip())
             
-        return emb, old_emb, transcriptions
+        return emb, transcriptions

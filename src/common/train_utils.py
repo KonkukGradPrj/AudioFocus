@@ -125,13 +125,13 @@ class TriSRLoss(nn.Module):
         super(TriSRLoss, self).__init__()
         self.beta = beta
 
-    def forward(self, predictions, old_predictions, targets):
+    def forward(self, predictions, init_predictions, targets):
         norm_predictions = F.normalize(predictions, p=2, dim=1)
-        norm_old_predictions = F.normalize(old_predictions, p=2, dim=1)
+        norm_init_predictions = F.normalize(init_predictions, p=2, dim=1)
         norm_targets = F.normalize(targets, p=2, dim=1)
 
-        pos_distance = torch.norm(norm_targets - norm_predictions, p=2, dim=1)
-        neg_distance = torch.norm(norm_predictions - norm_old_predictions, p=2, dim=1)\
-        
+        pos_distance = torch.norm(norm_targets - norm_predictions, p=2, dim=1).mean()
+        neg_distance = torch.norm(norm_predictions - norm_init_predictions, p=2, dim=1).mean()
+
         tri_loss = pos_distance - self.beta * neg_distance
-        return tri_loss.mean()
+        return tri_loss, pos_distance, neg_distance

@@ -51,7 +51,7 @@ class BaseTrainer():
         elif cfg.loss == 'snr':
             self.loss_fn = SNRLoss()
         elif cfg.loss == 'tri':
-            self.loss_fn = TriSRLoss()
+            self.loss_fn = TriSRLoss(beta=cfg.beta)
         else:
             self.loss_fn = L1MSELoss()
 
@@ -68,39 +68,41 @@ class BaseTrainer():
 
     def train(self):
         cfg = self.cfg
-        test_every = cfg.test_every
         num_epochs = cfg.epochs
         
         scaler = torch.cuda.amp.GradScaler(enabled=cfg.use_amp)
 
         test_logs = {}
-        test_logs['epoch'] = self.epoch
+        # test_logs['epoch'] = self.epoch
         
-        self.model.eval()
-        test_logs.update(self.test())
+        # self.model.eval()
+        # test_logs.update(self.test())
 
-        self.logger.update_log(**test_logs)
+        # self.logger.update_log(**test_logs)
         self.logger.log_to_wandb(self.step)
         
-        for epoch in range(int(num_epochs)):                
+        for _ in range(int(num_epochs)):                
             # train        
             self.model.train()
             for mixed_voices, clean_voices, _, target_voices in tqdm.tqdm(self.train_loader):   
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
+                
                 with torch.no_grad():
-                    target, target_emb_list, _, _ = self.vanilla(clean_voices, filter_every = cfg.filter_every)
-                predict, predict_emb_list, old_predict, old_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
+                    target, target_emb_list = self.vanilla(clean_voices, filter_every=cfg.filter_every)
+                    init_predict, init_emb_list = self.vanilla(mixed_voices, filter_every=cfg.filter_every)
+                
+                predict, predict_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
+                
                 train_logs = {}             
-
                 loss = 0
                 if cfg.loss == 'tri':
                     if cfg.filter_every:
-                        for idx, (old, predict, target) in enumerate(zip(predict_emb_list, target_emb_list, old_emb_list)):                    
-                            layer_loss = self.loss_fn(predict, old, target)
-                            train_logs[f'loss_{idx}'] = layer_loss
+                        for idx, (predict, init, target) in enumerate(zip(predict_emb_list, init_emb_list, target_emb_list)):                    
+                            layer_loss, layer_pos_dist, layer_neg_dist = self.loss_fn(predict, init, target)
                             loss += layer_loss
+                            train_logs[f'loss_{idx}'], train_logs[f'pos_dist_{idx}'], train_logs[f'neg_dist_{idx}'] = layer_loss, layer_pos_dist, layer_neg_dist
                     else:
-                        loss = self.loss_fn(predict, old_predict, target)
+                        loss, _, _ = self.loss_fn(predict, init_predict, target)
 
                 else:
                     if cfg.filter_every:
@@ -159,6 +161,7 @@ class BaseTrainer():
             self.logger.update_log(**test_logs)
             self.logger.log_to_wandb(self.step)
 
+    # on testing, losses is computed only on the last layer
     def test(self):
         test_wer = 0.0
         base_wer = 0.0
@@ -170,12 +173,15 @@ class BaseTrainer():
                 n = len(target_text)
 
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-                predict_emb, old_predict_emb, predict_text = self.model.transcribe(mixed_voices, target_voices, self.cfg.filter_every)
+                predict_emb, predict_text = self.model.transcribe(mixed_voices, target_voices, self.cfg.filter_every)
+
                 test_wer += self.wer.compute(references=target_text, predictions=predict_text) * n
+
+                baseline_emb, baseline_text = self.vanilla.transcribe(mixed_voices)
+                oracle_emb, oracle_text = self.vanilla.transcribe(clean_voices)
                 
-                oracle_emb, _, oracle_text = self.vanilla.transcribe(clean_voices)
                 if self.cfg.loss =='tri':
-                    test_loss = self.loss_fn(predict_emb, old_predict_emb, oracle_emb)
+                    test_loss, _, _ = self.loss_fn(predict_emb, baseline_emb, oracle_emb)
                 else:
                     test_loss = self.loss_fn(predict_emb, oracle_emb)
 
@@ -183,13 +189,12 @@ class BaseTrainer():
 
                 # calculate baseline in the first time.
                 if self.base_wer is None:
-                    baseline_emb, _, baseline_text = self.vanilla.transcribe(mixed_voices)
                     base_wer += self.wer.compute(references=target_text, predictions=baseline_text) * n
                     oracle_wer += self.wer.compute(references=target_text, predictions=oracle_text) * n
 
                     self.baseline_text = baseline_text[0]
                     if self.cfg.loss == 'tri':
-                        self.base_loss = self.loss_fn(baseline_emb, baseline_emb, oracle_emb)
+                        self.base_loss, _, _ = self.loss_fn(baseline_emb, baseline_emb, oracle_emb)
                     else:
                         self.base_loss = self.loss_fn(baseline_emb, oracle_emb)
                 

@@ -4,4 +4,4 @@ emb_dim: 384
 seq_len: 1500
 n_head: 3
 alpha: 4
-drop_prob: 0.1
+drop_prob: 0
