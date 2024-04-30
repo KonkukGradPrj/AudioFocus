@@ -15,13 +15,10 @@ class CrossAttention(nn.Module):
         self.heads = heads
         self.scale = dim_head ** -0.5
 
-        self.to_q = nn.Linear(feat_dim, heads * dim_head  // alpha, bias=False)
-        self.to_k = nn.Linear(emb_dim, heads * dim_head  // alpha, bias=False)
-        self.to_v = nn.Linear(emb_dim, heads * dim_head  // alpha, bias=False)
-        self.to_out = nn.Linear(heads * dim_head  // alpha, emb_dim // alpha, bias=False)
-
-        self.scales = nn.Parameter(torch.randn(seq_len, 1) * 0.01 + 1.0)  # Initialize scale close to 1 with small random noise
-        self.biases = nn.Parameter(torch.zeros(seq_len, 1))  # Initialize bias to 0
+        self.to_q = nn.Linear(feat_dim, heads * dim_head  // alpha)
+        self.to_k = nn.Linear(emb_dim, heads * dim_head  // alpha)
+        self.to_v = nn.Linear(emb_dim, heads * dim_head  // alpha)
+        self.to_out = nn.Linear(heads * dim_head  // alpha, emb_dim // alpha)
 
         self.register_buffer("positional_embedding", sinusoids(seq_len, feat_dim))
 
@@ -29,7 +26,7 @@ class CrossAttention(nn.Module):
     def forward(self, emb, feat):
         # Expand feat to match emb dimensions
         if feat.dim() == 2:
-            feat = feat.unsqueeze(1) * self.scales + self.biases  # Apply learnable scale and bias
+            feat = feat.unsqueeze(1) 
             feat = feat.expand(-1, emb.size(1), -1)  # Match sequence length of emb      
         
         q = rearrange(self.to_q(feat), 'b n (h d) -> b h d n', h=self.heads)

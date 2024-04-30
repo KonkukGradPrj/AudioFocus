@@ -80,7 +80,7 @@ class BaseTrainer():
 
         # self.logger.update_log(**test_logs)
         self.logger.log_to_wandb(self.step)
-        
+        lambdas = [1, 2, 3, 6]
         for _ in range(int(num_epochs)):                
             # train        
             self.model.train()
@@ -94,15 +94,17 @@ class BaseTrainer():
                 predict, predict_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
                 
                 train_logs = {}             
-                # temp
-                # with torch.no_grad():
-                #     _, _, predict_text = self.model.transcribe(mixed_voices, target_voices, cfg.filter_every)
-                #     train_logs['train/wer'] = self.wer.compute(references=utterances, predictions=predict_text)
+                                
+                with torch.no_grad():
+                    _, _, predict_text = self.model.transcribe(mixed_voices, target_voices, cfg.filter_every)
+                    train_logs['train/wer'] = self.wer.compute(references=utterances, predictions=predict_text)
+
                 loss = 0
                 if cfg.loss == 'tri':
                     if cfg.filter_every:
                         for idx, (predict, init, target) in enumerate(zip(predict_emb_list, init_emb_list, target_emb_list)):                    
                             layer_loss, layer_pos_dist, layer_neg_dist = self.loss_fn(predict, init, target)
+                            layer_loss, layer_pos_dist, layer_neg_dist = lambdas[idx] * layer_loss, lambdas[idx] * layer_pos_dist, lambdas[idx] * layer_neg_dist
                             loss += layer_loss
                             train_logs[f'train/loss_{idx}'], train_logs[f'train/pos_dist_{idx}'], train_logs[f'train/neg_dist_{idx}'] = layer_loss, layer_pos_dist, layer_neg_dist
                     else:
@@ -164,6 +166,7 @@ class BaseTrainer():
             test_logs.update(self.test())
             self.logger.update_log(**test_logs)
             self.logger.log_to_wandb(self.step)
+            torch.save(self.model.state_dict(), f"./data/weights/scale_{self.cfg.scale}_epoch_{self.epoch}.pth")
 
     # on testing, losses is computed only on the last layer
     def test(self):
