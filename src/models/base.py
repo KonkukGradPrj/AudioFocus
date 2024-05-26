@@ -3,6 +3,7 @@ import torch.nn as nn
 import whisper
 from copy import deepcopy
 import ipdb
+import torch.nn.functional as F
 
 
 class Model(nn.Module):
@@ -16,7 +17,7 @@ class Model(nn.Module):
         self.init_filter = deepcopy(self.filter)
     
 
-    def forward(self, input_voice, target_voice=None, filter_every=False):
+    def whisper_forward(self, input_voice, target_voice=None, filter_every=False):
         """
         input: 
             mixed_voice: input voice. mixed voce if target voice is not none else target voice.
@@ -60,6 +61,21 @@ class Model(nn.Module):
         
         return emb, mid_layer_embeddings
     
+    def hubert_forward(self, input_voice, target_voice=None, filter_every=False):
+        emb = self.asr_model.encode(input_voice)
+        if target_voice is not None: # filtering using target voice
+            feat = self.speaker_model.extract_feature(target_voice)        
+            filter_emb = self.filter(emb, feat)
+            init_emb = self.init_filter(emb, feat)
+            emb = emb + filter_emb - init_emb
+            
+        return emb, []
+    
+    def forward(self, input_voice, target_voice=None, filter_every=False, whisper=False):
+        if whisper:
+            return self.whisper_forward(input_voice, target_voice, filter_every)
+        else:
+            return self.hubert_forward(input_voice, target_voice)
         
     @torch.no_grad()
     def transcribe(self, input_voice, target_voice=None, filter_every=False):

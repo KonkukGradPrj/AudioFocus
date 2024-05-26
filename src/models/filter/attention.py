@@ -10,7 +10,7 @@ from src.models.filter.base import BaseFilter
 
 
 class CrossAttention(nn.Module):
-    def __init__(self, feat_dim=192, emb_dim=384, seq_len=1500, heads=3, alpha=4, dim_head=96):
+    def __init__(self, feat_dim=192, emb_dim=784, seq_len=1500, heads=3, alpha=4, dim_head=96):
         super().__init__()
         self.heads = heads
         self.scale = dim_head ** -0.5
@@ -28,6 +28,7 @@ class CrossAttention(nn.Module):
         if feat.dim() == 2:
             feat = feat.unsqueeze(1) 
             feat = feat.expand(-1, emb.size(1), -1)  # Match sequence length of emb      
+        ipdb.set_trace()
         
         q = rearrange(self.to_q(feat), 'b n (h d) -> b h d n', h=self.heads)
         k = rearrange(self.to_k(emb), 'b n (h d) -> b h d n', h=self.heads)
@@ -45,7 +46,7 @@ class CrossAttention(nn.Module):
 
 
 class CrossAttentionBlock(nn.Module):
-    def __init__(self, feat_dim=192, emb_dim=384, seq_len=1500, n_head=3, alpha=4, drop_prob=0.1):
+    def __init__(self, feat_dim=192, emb_dim=784, seq_len=1500, n_head=3, alpha=4, drop_prob=0.1):
         super().__init__()
         self.dropout1 = nn.Dropout(p=drop_prob)
         self.norm1 = nn.LayerNorm(emb_dim // alpha)
@@ -71,7 +72,7 @@ class CrossAttentionBlock(nn.Module):
 
 class AttentionFilter(BaseFilter):
     name = 'attention'
-    def __init__(self, feat_dim=192, emb_dim=384, seq_len=1500, n_head=3, alpha=4, drop_prob=0.1):
+    def __init__(self, feat_dim=192, emb_dim=784, seq_len=1500, n_head=3, alpha=4, drop_prob=0.1):
         super().__init__()
 
         self.dropout0 = nn.Dropout(p=drop_prob)
@@ -79,9 +80,9 @@ class AttentionFilter(BaseFilter):
         
         self.blocks = nn.ModuleList([
             CrossAttentionBlock(feat_dim, emb_dim, seq_len, n_head, alpha, drop_prob),
-            CrossAttentionBlock(feat_dim, emb_dim, seq_len, n_head, alpha, drop_prob),
-            CrossAttentionBlock(feat_dim, emb_dim, seq_len, n_head, alpha, drop_prob),
-            CrossAttentionBlock(feat_dim, emb_dim, seq_len, n_head, alpha, drop_prob),
+            # CrossAttentionBlock(feat_dim, emb_dim, seq_len, n_head, alpha, drop_prob),
+            # CrossAttentionBlock(feat_dim, emb_dim, seq_len, n_head, alpha, drop_prob),
+            # CrossAttentionBlock(feat_dim, emb_dim, seq_len, n_head, alpha, drop_prob),
         ])
 
     def forward(self, emb, feat, idx=-1):
@@ -96,9 +97,8 @@ class AttentionFilter(BaseFilter):
         Returns:
             Tensor: The output tensor after processing.
         """
-
         # Add positional encoding to the embedding
-        # emb = (emb + self.positional_embedding).to(emb.dtype)        
+        # emb = (emb + self.positional_embedding).to(emb.dtype)   
         if idx == -1:
             for block in self.blocks:
                 emb = block(emb, feat)

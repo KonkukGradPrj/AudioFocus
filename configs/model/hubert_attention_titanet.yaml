@@ -1,0 +1,4 @@
+defaults:
+- asr: hubert
+- filter: attention
+- speaker: titanet

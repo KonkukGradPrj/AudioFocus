@@ -29,7 +29,7 @@ class BaseTrainer():
         self.device = device
         self.logger = logger
         self.model = model.to(self.device)
-        self.vanilla = vanilla.to(self.device)
+        # self.vanilla = vanilla.to(self.device)
         self.train_loader = train_loader
         self.test_loader = test_loader
 
@@ -70,7 +70,7 @@ class BaseTrainer():
         cfg = self.cfg
         num_epochs = cfg.epochs
         
-        scaler = torch.cuda.amp.GradScaler(enabled=cfg.use_amp)
+        # scaler = torch.cuda.amp.GradScaler(enabled=cfg.use_amp)
 
         test_logs = {}
         # test_logs['epoch'] = self.epoch
@@ -80,24 +80,26 @@ class BaseTrainer():
 
         # self.logger.update_log(**test_logs)
         self.logger.log_to_wandb(self.step)
-        lambdas = [1, 2, 3, 6]
-        for _ in range(int(num_epochs)):                
+        # lambdas = [0.05, 0.1, 0.2, 0.65]
+        lambdas = [0.05, 0.1, 0.15, 0.7]
+        for epoch in range(int(num_epochs)):                
             # train        
             self.model.train()
             for mixed_voices, clean_voices, utterances, target_voices in tqdm.tqdm(self.train_loader):   
                 mixed_voices, clean_voices, target_voices = mixed_voices.to(self.device), clean_voices.to(self.device), target_voices.to(self.device)
-                
-                with torch.no_grad():
-                    target, target_emb_list = self.vanilla(clean_voices, filter_every=cfg.filter_every)
-                    init_predict, init_emb_list = self.vanilla(mixed_voices, filter_every=cfg.filter_every)
-                
-                predict, predict_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
-                
+
                 train_logs = {}             
-                                
                 with torch.no_grad():
-                    _, _, predict_text = self.model.transcribe(mixed_voices, target_voices, cfg.filter_every)
-                    train_logs['train/wer'] = self.wer.compute(references=utterances, predictions=predict_text)
+                    # _, _, predict_text = self.model.transcribe(mixed_voices, target_voices, cfg.filter_every)
+                    # train_wer = self.wer.compute(references=utterances, predictions=predict_text)
+                    # if train_wer > 0.8: # high quality data # 0.75 - 0.72
+                    #     continue
+                    
+                    target, target_emb_list = self.model(clean_voices, filter_every=cfg.filter_every)
+                    init_predict, init_emb_list = self.model(mixed_voices, filter_every=cfg.filter_every)
+                    # train_logs['train/wer'] = train_wer
+
+                predict, predict_emb_list = self.model(mixed_voices, target_voices, cfg.filter_every)
 
                 loss = 0
                 if cfg.loss == 'tri':
@@ -119,8 +121,9 @@ class BaseTrainer():
                     else:
                         loss = self.loss_fn(predict, target)
                 
-                scaler.scale(loss).backward()
+                self.optimizer.zero_grad()
                 
+                loss.backward()
                 ################
                 #  gradient norm
                 gradient_norms = {name: torch.norm(param.grad).item() for name, param in self.model.filter.named_parameters() \
@@ -137,10 +140,8 @@ class BaseTrainer():
                     weight_scale += torch.sum(param ** 2)
                 weight_scale = torch.sqrt(weight_scale)
                 
-                scaler.unscale_(self.optimizer)
                 torch.nn.utils.clip_grad_norm_(self.model.filter.parameters(), cfg.clip_grad_norm)
-                scaler.step(self.optimizer)
-                scaler.update()
+                self.optimizer.step()
 
                 ################
                 # log        
@@ -166,7 +167,7 @@ class BaseTrainer():
             test_logs.update(self.test())
             self.logger.update_log(**test_logs)
             self.logger.log_to_wandb(self.step)
-            torch.save(self.model.state_dict(), f"./data/weights/scale_{self.cfg.scale}_epoch_{self.epoch}.pth")
+            torch.save(self.model.state_dict(), f"./data/weights/exp_name{self.cfg.optimizer['lr']}_scale_{self.cfg.scale}_epoch_{self.epoch}.pth")
 
     # on testing, losses is computed only on the last layer
     def test(self):
@@ -184,8 +185,8 @@ class BaseTrainer():
 
                 test_wer += self.wer.compute(references=target_text, predictions=predict_text) * n
 
-                baseline_emb, _, baseline_text = self.vanilla.transcribe(mixed_voices)
-                oracle_emb, _, oracle_text = self.vanilla.transcribe(clean_voices)
+                baseline_emb, _, baseline_text = self.model.transcribe(mixed_voices)
+                oracle_emb, _, oracle_text = self.model.transcribe(clean_voices)
                 
                 if self.cfg.loss =='tri':
                     test_loss, _, _ = self.loss_fn(predict_emb, baseline_emb, oracle_emb)
